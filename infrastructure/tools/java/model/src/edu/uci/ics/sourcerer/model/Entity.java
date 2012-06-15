@@ -21,27 +21,37 @@ package edu.uci.ics.sourcerer.model;
  * @author Joel Ossher (jossher@uci.edu)
  */
 public enum Entity {
-    PACKAGE,
-    CLASS,
-    INTERFACE,
-    ENUM,
-    ANNOTATION,
-    INITIALIZER,
-    FIELD,
-    ENUM_CONSTANT,
-    CONSTRUCTOR,
-    METHOD,
-    ANNOTATION_ELEMENT,
-    PARAMETER,
-    LOCAL_VARIABLE,
-    PRIMITIVE,
-    ARRAY,
-    TYPE_VARIABLE,
-    WILDCARD,
-    PARAMETERIZED_TYPE,
-    DUPLICATE,
-    UNKNOWN,
+    PACKAGE             ((byte)0x00),
+    CLASS               ((byte)0x01),
+    INTERFACE           ((byte)0x02),
+    ENUM                ((byte)0x03),
+    ANNOTATION          ((byte)0x04),
+    INITIALIZER         ((byte)0x05),
+    FIELD               ((byte)0x06),
+    ENUM_CONSTANT       ((byte)0x07),
+    CONSTRUCTOR         ((byte)0x08),
+    METHOD              ((byte)0x09),
+    ANNOTATION_ELEMENT  ((byte)0x0a),
+    PARAMETER           ((byte)0x0b),
+    LOCAL_VARIABLE      ((byte)0x0c),
+    PRIMITIVE           ((byte)0x0d),
+    ARRAY               ((byte)0x0e),
+    TYPE_VARIABLE       ((byte)0x0f),
+    WILDCARD            ((byte)0x10),
+    PARAMETERIZED_TYPE  ((byte)0x11),
+    DUPLICATE           ((byte)0x12),
+    UNKNOWN             ((byte)0x13),
     ;
+    
+    protected byte value;
+    
+    private Entity(byte value) {
+      this.value = value;
+    }
+    
+    public byte getValue() {
+      return value;
+    }
     
     public boolean isDeclaredType() {
       return this == CLASS || this == INTERFACE || this == ENUM || this == ANNOTATION;

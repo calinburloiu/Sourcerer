@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/model"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/utilities"/>
+	<classpathentry kind="lib" path="/lib/hbase-0.92.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/calin/opt/hbase-0.92.1/docs/apidocs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/lib/hadoop-core-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/conf"/>
+	<classpathentry kind="lib" path="/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/lib/commons-configuration-1.6.jar"/>
+	<classpathentry kind="lib" path="/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="lib" path="/lib/slf4j-jcl-1.5.8.jar"/>
+	<classpathentry kind="lib" path="/lib/zookeeper-3.4.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

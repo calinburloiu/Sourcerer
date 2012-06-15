@@ -19,11 +19,22 @@ package edu.uci.ics.sourcerer.model;
 
 /**
  * @author Joel Ossher (jossher@uci.edu)
+ * @author Calin-Andrei Burloiu
  */
 public enum Project {
-  SYSTEM,
-  JAVA_LIBRARY,
-  CRAWLED,
-  JAR,
-  MAVEN;
+  SYSTEM        ((byte)0x00),
+  JAVA_LIBRARY  ((byte)0x01),
+  CRAWLED       ((byte)0x02),
+  JAR           ((byte)0x03),
+  MAVEN         ((byte)0x04);
+  
+  protected final byte value;
+  
+  private Project(byte value) {
+    this.value = value;
+  }
+  
+  public byte getValue() {
+    return value;
+  }
 }
