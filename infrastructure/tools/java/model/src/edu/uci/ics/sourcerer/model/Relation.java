@@ -21,31 +21,34 @@ package edu.uci.ics.sourcerer.model;
  * @author Joel Ossher (jossher@uci.edu)
  */
 public enum Relation {
-  INSIDE            ((byte)0x00),
-  EXTENDS           ((byte)0x01),
-  IMPLEMENTS        ((byte)0x02),
-  HOLDS             ((byte)0x03),
-  RETURNS           ((byte)0x04),
-  READS             ((byte)0x05),
-  WRITES            ((byte)0x06),
-  CALLS             ((byte)0x07),
-  USES              ((byte)0x08),
-  INSTANTIATES      ((byte)0x09),
-  THROWS            ((byte)0x0a),
-  CASTS             ((byte)0x0b),
-  CHECKS            ((byte)0x0c),
-  ANNOTATED_BY      ((byte)0x0d),
-  HAS_ELEMENTS_OF   ((byte)0x0e),
-  PARAMETRIZED_BY   ((byte)0x0f),
-  HAS_BASE_TYPE     ((byte)0x10),
-  HAS_TYPE_ARGUMENT ((byte)0x11),
-  HAS_UPPER_BOUND   ((byte)0x12),
-  HAS_LOWER_BOUND   ((byte)0x13),
-  OVERRIDES         ((byte)0x14),
-  MATCHES           ((byte)0x15),
+  UNKNOWN           ((byte)0x00),
+  INSIDE            ((byte)0x01),
+  EXTENDS           ((byte)0x02),
+  IMPLEMENTS        ((byte)0x03),
+  HOLDS             ((byte)0x04),
+  RETURNS           ((byte)0x05),
+  READS             ((byte)0x06),
+  WRITES            ((byte)0x07),
+  CALLS             ((byte)0x08),
+  USES              ((byte)0x09),
+  INSTANTIATES      ((byte)0x0a),
+  THROWS            ((byte)0x0b),
+  CASTS             ((byte)0x0c),
+  CHECKS            ((byte)0x0d),
+  ANNOTATED_BY      ((byte)0x0e),
+  HAS_ELEMENTS_OF   ((byte)0x0f),
+  PARAMETRIZED_BY   ((byte)0x10),
+  HAS_BASE_TYPE     ((byte)0x11),
+  HAS_TYPE_ARGUMENT ((byte)0x12),
+  HAS_UPPER_BOUND   ((byte)0x13),
+  HAS_LOWER_BOUND   ((byte)0x14),
+  OVERRIDES         ((byte)0x15),
+  MATCHES           ((byte)0x16),
   ;
 
   protected byte value;
+  
+  public static final byte MASK = ((byte)0x1F);
   
   private Relation(byte value) {
     this.value = value;

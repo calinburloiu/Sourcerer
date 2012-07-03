@@ -17,10 +17,28 @@ import edu.uci.ics.sourcerer.model.Relation;
  * @author Calin-Andrei Burloiu
  *
  */
-public class InverseRelationsTable {
-  public static String NAME = "inverse_relations";
+public class InverseRelationsHBTable extends HBTable {
+  private static InverseRelationsHBTable instance = null;
   
-  public static byte[] CF_DEFAULT = Bytes.toBytes("d");
+  public static final String NAME = "inverse_relations";
+  
+  public static final byte[] CF_DEFAULT = Bytes.toBytes("d");
+  
+  private InverseRelationsHBTable() {
+    super();
+  }
+  
+  public static InverseRelationsHBTable getInstance() {
+    if (instance == null) {
+      instance = new InverseRelationsHBTable();
+    }
+    return instance;
+  }
+  
+  @Override
+  public String getName() {
+    return NAME;
+  }
   
   /**
    * Compute row key.
@@ -47,8 +65,9 @@ public class InverseRelationsTable {
     return Bytes.add(projectID, fileID);
   }
   
-  public static HTableDescriptor getTableDescriptor(
-      DatabaseConfiguration dbConf) {
+  public static HTableDescriptor getTableDescriptor() {
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    
     HTableDescriptor tableDesc = new HTableDescriptor(
         dbConf.getTablePrefix() + NAME);
     

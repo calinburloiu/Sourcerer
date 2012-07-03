@@ -22,24 +22,42 @@ import edu.uci.ics.sourcerer.model.Relation;
  * @author Calin-Andrei Burloiu
  *
  */
-public class FilesTable {
-  public static String NAME = "files";
+public class FilesHBTable extends HBTable {
+  private static FilesHBTable instance = null;
   
-  public static byte[] CF_DEFAULT = Bytes.toBytes("d");
-  public static byte[] COL_NAME = Bytes.toBytes("name");
-  public static byte[] COL_PATH = Bytes.toBytes("path");
-  public static byte[] COL_HASH = Bytes.toBytes("hash");
-  public static byte[] COL_JARPID = Bytes.toBytes("jpid");
+  public static final String NAME = "files";
   
-  public static byte[] CF_METRICS = Bytes.toBytes("m");
-  public static byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
-  public static byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
+  public static final byte[] CF_DEFAULT = Bytes.toBytes("d");
+  public static final byte[] COL_NAME = Bytes.toBytes("name");
+  public static final byte[] COL_PATH = Bytes.toBytes("path");
+  public static final byte[] COL_HASH = Bytes.toBytes("hash");
+  public static final byte[] COL_JARPID = Bytes.toBytes("jpid");
   
-  public static byte[] CF_ENTITIES = Bytes.toBytes("e");
+  public static final byte[] CF_METRICS = Bytes.toBytes("m");
+  public static final byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
+  public static final byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
   
-  public static byte[] CF_RELATIONS = Bytes.toBytes("r");
+  public static final byte[] CF_ENTITIES = Bytes.toBytes("e");
   
-  public static byte[] CF_IMPORTS = Bytes.toBytes("i");
+  public static final byte[] CF_RELATIONS = Bytes.toBytes("r");
+  
+  public static final byte[] CF_IMPORTS = Bytes.toBytes("i");
+  
+  private FilesHBTable() {
+    super();
+  }
+  
+  public static FilesHBTable getInstance() {
+    if (instance == null) {
+      instance = new FilesHBTable();
+    }
+    return instance;
+  }
+  
+  @Override
+  public String getName() {
+    return NAME;
+  }
   
   /**
    * Compute row key.
@@ -96,8 +114,9 @@ public class FilesTable {
     }
   }
   
-  public static HTableDescriptor getTableDescriptor(
-      DatabaseConfiguration dbConf) {
+  public static HTableDescriptor getTableDescriptor() {
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    
     HTableDescriptor tableDesc = new HTableDescriptor(
         dbConf.getTablePrefix() + NAME);
     

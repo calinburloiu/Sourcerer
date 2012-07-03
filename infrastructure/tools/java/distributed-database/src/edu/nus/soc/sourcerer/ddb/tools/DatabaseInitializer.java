@@ -3,6 +3,7 @@ package edu.nus.soc.sourcerer.ddb.tools;
 import java.io.IOException;
 import java.util.Vector;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -11,13 +12,13 @@ import org.apache.hadoop.hbase.TableExistsException;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
-import edu.nus.soc.sourcerer.ddb.DatabaseConfiguration;
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
-import edu.nus.soc.sourcerer.ddb.tables.EntitiesHashTable;
-import edu.nus.soc.sourcerer.ddb.tables.EntitiesTable;
-import edu.nus.soc.sourcerer.ddb.tables.FilesTable;
-import edu.nus.soc.sourcerer.ddb.tables.InverseRelationsTable;
-import edu.nus.soc.sourcerer.ddb.tables.ProjectsTable;
+import edu.nus.soc.sourcerer.ddb.HBaseException;
+import edu.nus.soc.sourcerer.ddb.tables.EntitiesHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.EntitiesHashHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.FilesHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.InverseRelationsHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.ProjectsHBTable;
 
 import static edu.uci.ics.sourcerer.util.io.Logging.logger;
 
@@ -30,17 +31,24 @@ import static edu.uci.ics.sourcerer.util.io.Logging.logger;
  */
 public class DatabaseInitializer {
   
-  protected DatabaseConfiguration databaseConfiguration;
+  HBaseAdmin admin = null;
   protected Vector<HTableDescriptor> tables = new Vector<HTableDescriptor>(16);
   
-  public DatabaseInitializer(DatabaseConfiguration databaseConfiguration) {
-    this.databaseConfiguration = databaseConfiguration; 
+  public DatabaseInitializer() throws HBaseConnectionException {
+    Configuration conf = HBaseConfiguration.create();
+    try {
+      admin = new HBaseAdmin(conf);
+    } catch (ZooKeeperConnectionException e) {
+      throw new HBaseConnectionException(e);
+    } catch (MasterNotRunningException e) {
+      throw new HBaseConnectionException(e);
+    }
     
-    tables.add(ProjectsTable.getTableDescriptor(databaseConfiguration));
-    tables.add(FilesTable.getTableDescriptor(databaseConfiguration));
-    tables.add(EntitiesTable.getTableDescriptor(databaseConfiguration));
-    tables.add(EntitiesHashTable.getTableDescriptor(databaseConfiguration));
-    tables.add(InverseRelationsTable.getTableDescriptor(databaseConfiguration));
+    tables.add(ProjectsHBTable.getTableDescriptor());
+    tables.add(FilesHBTable.getTableDescriptor());
+    tables.add(EntitiesHBTable.getTableDescriptor());
+    tables.add(EntitiesHashHBTable.getTableDescriptor());
+    tables.add(InverseRelationsHBTable.getTableDescriptor());
   }
   
   /**
@@ -48,12 +56,12 @@ public class DatabaseInitializer {
    * exists, the parameters configure if it must be emptied or altered in case
    * the schema is not the same.
    * 
-   * @param emptyIfExists empty tables that already exist
-   * @param alterIfExists alter tables that already exist and have a different
+   * @param emptyExisting empty tables that already exist
+   * @param updateExisting alter tables that already exist and have a different
    * schema
    */
-  public void start(boolean emptyIfExists, boolean alterIfExists)
-      throws HBaseConnectionException {
+  public void start(boolean emptyExisting, boolean updateExisting)
+      throws HBaseException {
     for (HTableDescriptor tableDesc : tables) {
       try {
         createTable(tableDesc);
@@ -61,13 +69,20 @@ public class DatabaseInitializer {
       } catch (TableExistsException e) {
         logger.info("Table `" + tableDesc.getNameAsString() + "` already exists.");
         
-        if (emptyIfExists) {
+        if (emptyExisting) {
           emptyTable(tableDesc.getName());
+          try {
+            createTable(tableDesc);
+          } catch (TableExistsException e1) {
+            throw new Error("Error while recreating table `"
+                + tableDesc.getNameAsString()
+                + "`; this table shouldn't exist.");
+          }
           logger.info("Table `" + tableDesc.getNameAsString() + "` emptied.");
         }
         
-        if (alterIfExists) {
-          if (modifyTable(tableDesc))
+        if (updateExisting && !emptyExisting) {
+          if (updateTable(tableDesc))
             logger.info("Table `" + tableDesc.getNameAsString() + "` modified.");
           else
             logger.info("Table `" + tableDesc.getNameAsString()
@@ -85,22 +100,15 @@ public class DatabaseInitializer {
    * @throws TableExistsException
    */
   public void createTable(HTableDescriptor tableDesc) 
-      throws HBaseConnectionException, TableExistsException {
-    Configuration conf = HBaseConfiguration.create();
-    
-    HBaseAdmin admin = null;
+      throws HBaseException, TableExistsException {
     try {
-      admin = new HBaseAdmin(conf);
-      
       admin.createTable(tableDesc);
-    } catch (ZooKeeperConnectionException e) {
-      throw new HBaseConnectionException(e);
     } catch (MasterNotRunningException e) {
       throw new HBaseConnectionException(e);
     } catch (TableExistsException e) {
       throw e;
     } catch (IOException e) {
-      throw new HBaseConnectionException(e);
+      throw new HBaseException(e);
     }
   }
   
@@ -111,8 +119,15 @@ public class DatabaseInitializer {
    * @throws HBaseConnectionException
    */
   public void emptyTable(byte[] tableName)
-      throws HBaseConnectionException {
-    // TODO emptyTable
+      throws HBaseException {
+    try {
+      if (!admin.isTableDisabled(tableName)) {
+        admin.disableTable(tableName);
+      }
+      admin.deleteTable(tableName);
+    } catch (IOException e) {
+      throw new HBaseException(e);
+    }
   }
   
   /**
@@ -123,21 +138,20 @@ public class DatabaseInitializer {
    * @return true if the table was modified
    * @throws HBaseConnectionException
    */
-  public boolean modifyTable(HTableDescriptor tableDesc) 
+  public boolean updateTable(HTableDescriptor tableDesc) 
       throws HBaseConnectionException {
-    // TODO modifyTable
-    
-    return false;
+    // TODO updateTable
+    throw new NotImplementedException();
   }
   
   // FIXME remove testing main
   public static void main(String args[]) {
-    DatabaseConfiguration dbConf = new DatabaseConfiguration();
-    DatabaseInitializer dbInit = new DatabaseInitializer(dbConf);
-    
     try {
+      DatabaseInitializer dbInit = new DatabaseInitializer();
       dbInit.start(false, false);
     } catch (HBaseConnectionException e) {
+      e.printStackTrace();
+    } catch (HBaseException e) {
       e.printStackTrace();
     }
   }

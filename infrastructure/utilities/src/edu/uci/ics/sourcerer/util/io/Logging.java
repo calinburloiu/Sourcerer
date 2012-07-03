@@ -17,6 +17,7 @@
  */
 package edu.uci.ics.sourcerer.util.io;
 
+import static edu.uci.ics.sourcerer.util.io.Logging.logger;
 import static edu.uci.ics.sourcerer.util.io.Properties.OUTPUT;
 
 import java.io.BufferedReader;
@@ -89,6 +90,7 @@ public final class Logging {
     defaultHandler = new StreamHandler(System.out, formatter);
     defaultHandler.setLevel(Level.INFO);
     logger.addHandler(defaultHandler);
+    logger.setLevel(Level.ALL);
     
     SimpleDateFormat format = new SimpleDateFormat("MMM-dd-yyyy");
     day = format.format(new Date()).toLowerCase();
@@ -215,7 +217,7 @@ public final class Logging {
         errorHandler = new FileHandler(getFileHandlerPattern(command, ERROR_LOG));
         errorHandler.setFormatter(errorFormatter);
       }
-      errorHandler.setLevel(Level.INFO);
+      errorHandler.setLevel(Level.FINE);
       
       StreamHandler infoHandler = null;
       if (!suppressFileLogging) {

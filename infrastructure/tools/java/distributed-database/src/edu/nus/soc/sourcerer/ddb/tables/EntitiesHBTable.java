@@ -19,10 +19,28 @@ import edu.uci.ics.sourcerer.model.Entity;
  * @author Calin-Andrei Burloiu
  *
  */
-public class EntitiesTable {
-  public static String NAME = "entities";
+public class EntitiesHBTable extends HBTable {
+  private static EntitiesHBTable instance = null;
   
-  public static byte[] CF_DEFAULT = Bytes.toBytes("d");
+  public static final String NAME = "entities";
+  
+  public static final byte[] CF_DEFAULT = Bytes.toBytes("d");
+  
+  private EntitiesHBTable() {
+    super();
+  }
+  
+  public static EntitiesHBTable getInstance() {
+    if (instance == null) {
+      instance = new EntitiesHBTable();
+    }
+    return instance;
+  }
+  
+  @Override
+  public String getName() {
+    return NAME;
+  }
   
   /**
    * Compute row key.
@@ -50,8 +68,9 @@ public class EntitiesTable {
     return new byte[] {entityType.getValue()};
   }
   
-  public static HTableDescriptor getTableDescriptor(
-      DatabaseConfiguration dbConf) {
+  public static HTableDescriptor getTableDescriptor() {
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    
     HTableDescriptor tableDesc = new HTableDescriptor(
         dbConf.getTablePrefix() + NAME);
     

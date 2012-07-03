@@ -21,9 +21,21 @@ package edu.uci.ics.sourcerer.model;
  * @author Joel Ossher (jossher@uci.edu)
  */
 public enum RelationClass {
-  JAVA_LIBRARY,
-  INTERNAL,
-  EXTERNAL,
-  UNKNOWN,
-  NOT_APPLICABLE;
+  UNKNOWN         ((byte)0x00),
+  JAVA_LIBRARY    ((byte)0x20),
+  INTERNAL        ((byte)0x40),
+  EXTERNAL        ((byte)0x60),
+  NOT_APPLICABLE  ((byte)0x80);
+
+  protected byte value;
+  
+  public static final byte MASK = ((byte)0xE0);
+  
+  private RelationClass(byte value) {
+    this.value = value;
+  }
+  
+  public byte getValue() {
+    return value;
+  }
 }

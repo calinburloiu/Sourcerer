@@ -22,11 +22,12 @@ package edu.uci.ics.sourcerer.model;
  * @author Calin-Andrei Burloiu
  */
 public enum Project {
-  SYSTEM        ((byte)0x00),
-  JAVA_LIBRARY  ((byte)0x01),
-  CRAWLED       ((byte)0x02),
-  JAR           ((byte)0x03),
-  MAVEN         ((byte)0x04);
+  UNKNOWN       ((byte)0x00),
+  SYSTEM        ((byte)0x01),
+  JAVA_LIBRARY  ((byte)0x02),
+  CRAWLED       ((byte)0x03),
+  JAR           ((byte)0x04),
+  MAVEN         ((byte)0x05);
   
   protected final byte value;
   

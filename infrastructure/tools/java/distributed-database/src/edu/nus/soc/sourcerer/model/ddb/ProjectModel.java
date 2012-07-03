@@ -1,8 +1,6 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
-import java.lang.reflect.Field;
-
-import edu.nus.soc.sourcerer.util.HumanReadable;
+import edu.nus.soc.sourcerer.util.Serialization;
 import edu.uci.ics.sourcerer.model.Project;
 
 /**
@@ -18,24 +16,25 @@ public class ProjectModel extends ModelWithID {
   protected String version;
   protected String group;
   protected String path;
-  protected boolean hasSource;
+  protected byte[] hash = null;
+  protected Boolean hasSource;
 
   // Line of Code
-  protected int loc;
+  protected Integer loc;
   // Non white space Lines of Code
-  protected int nwloc;
+  protected Integer nwloc;
 
   public ProjectModel(byte[] projectID, Project type, String name,
       String description, String version, String group, String path,
-      boolean hasSource, int loc, int nwloc) {
-    super();
-    this.id = projectID;
+      byte[] hash, Boolean hasSource, Integer loc, Integer nwloc) {
+    super(projectID);
     this.type = type;
     this.name = name;
     this.description = description;
     this.version = version;
     this.group = group;
     this.path = path;
+    this.hash = hash;
     this.hasSource = hasSource;
     this.loc = loc;
     this.nwloc = nwloc;
@@ -43,7 +42,7 @@ public class ProjectModel extends ModelWithID {
   
   public ProjectModel(Project type, String name,
       String description, String version, String group, String path,
-      boolean hasSource, int loc, int nwloc) {
+      byte[] hash, Boolean hasSource, Integer loc, Integer nwloc) {
     super();
     this.type = type;
     this.name = name;
@@ -51,20 +50,29 @@ public class ProjectModel extends ModelWithID {
     this.version = version;
     this.group = group;
     this.path = path;
+    this.hash = hash;
     this.hasSource = hasSource;
     this.loc = loc;
     this.nwloc = nwloc;
     
-    try {
-      id = computeId(128, new Field[] {this.getClass().getDeclaredField("name"),
-          this.getClass().getDeclaredField("description"),
-          this.getClass().getDeclaredField("hasSource"),
-          this.getClass().getDeclaredField("nwloc")});
-    } catch (SecurityException e) {
-      throw new Error("Reflection programming error.", e);
-    } catch (NoSuchFieldException e) {
-      throw new Error("Reflection programming error.", e);
+    // Compute ID.
+    if (type == Project.SYSTEM) {
+      if (name.equals("primitives")) {
+        id = new byte[] {'p', 'r', 'i', 'm', 'i', 't', 'i', 'v', 'e', 's',
+            '\0', '\0', '\0', '\0', '\0', '\0'};
+      } else if (name.equals("unknowns")) {
+        id = new byte[] {'u', 'n', 'k', 'n', 'o', 'w', 'n', 's',
+            '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+      }
+    } else if (type == Project.JAVA_LIBRARY || type == Project.CRAWLED) {
+      id = computeId(1024, "path");
+    } else if (type == Project.JAR || type == Project.MAVEN) {
+      id = hash;
     }
+  }
+  
+  public ProjectModel(Project type, String name, String path, byte[] hash) {
+    this(type, name, null, null, null, path, hash, null, null, null);
   }
 
   public Project getType() {
@@ -91,22 +99,26 @@ public class ProjectModel extends ModelWithID {
     return path;
   }
 
+  public byte[] getHash() {
+    return hash;
+  }
+
   public boolean hasSource() {
     return hasSource;
   }
 
-  public int getLoc() {
+  public Integer getLoc() {
     return loc;
   }
 
-  public int getNwloc() {
+  public Integer getNwloc() {
     return nwloc;
   }
 
   @Override
   public String toString() {
     return "project " + name + " ("
-        + HumanReadable.byteArrayToHexString(id) + ")";
+        + Serialization.byteArrayToHexString(id) + ")";
   }
   
 //  public static void main(String args[]) {

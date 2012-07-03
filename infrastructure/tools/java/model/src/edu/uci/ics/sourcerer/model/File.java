@@ -21,9 +21,10 @@ package edu.uci.ics.sourcerer.model;
  * @author Joel Ossher (jossher@uci.edu)
  */
 public enum File {
-  SOURCE  ((byte)0x00),
-  CLASS   ((byte)0x01),
-  JAR     ((byte)0x02);
+  UNKNOWN ((byte)0x00),
+  SOURCE  ((byte)0x01),
+  CLASS   ((byte)0x02),
+  JAR     ((byte)0x03);
   
   protected final byte value;
   

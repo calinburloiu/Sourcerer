@@ -1,6 +1,6 @@
 package edu.nus.soc.sourcerer.ddb;
 
-public class HBaseConnectionException extends Exception {
+public class HBaseConnectionException extends HBaseException {
 
   private static final long serialVersionUID = 2031773379280461628L;
 

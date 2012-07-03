@@ -1,5 +1,6 @@
 package edu.nus.soc.sourcerer.ddb.tables;
 
+
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.io.hfile.Compression;
@@ -17,20 +18,38 @@ import edu.uci.ics.sourcerer.model.Project;
  * @author Calin-Andrei Burloiu
  *
  */
-public class ProjectsTable {
-  public static String NAME = "projects";
+public class ProjectsHBTable extends HBTable {
+  private static ProjectsHBTable instance = null;
   
-  public static byte[] CF_DEFAULT = Bytes.toBytes("d");
-  public static byte[] COL_NAME = Bytes.toBytes("name");
-  public static byte[] COL_DESCRIPTION = Bytes.toBytes("dscr");
-  public static byte[] COL_VERSION = Bytes.toBytes("ver");
-  public static byte[] COL_GROUP = Bytes.toBytes("grp");
-  public static byte[] COL_PATH = Bytes.toBytes("path");
-  public static byte[] COL_HASSOURCE = Bytes.toBytes("hsrc");
+  public static final String NAME = "projects";
   
-  public static byte[] CF_METRICS = Bytes.toBytes("m");
-  public static byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
-  public static byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
+  public static final byte[] CF_DEFAULT = Bytes.toBytes("d");
+  public static final byte[] COL_NAME = Bytes.toBytes("name");
+  public static final byte[] COL_DESCRIPTION = Bytes.toBytes("dscr");
+  public static final byte[] COL_VERSION = Bytes.toBytes("ver");
+  public static final byte[] COL_GROUP = Bytes.toBytes("grp");
+  public static final byte[] COL_PATH = Bytes.toBytes("path");
+  public static final byte[] COL_HASSOURCE = Bytes.toBytes("hsrc");
+  
+  public static final byte[] CF_METRICS = Bytes.toBytes("m");
+  public static final byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
+  public static final byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
+  
+  private ProjectsHBTable() {
+    super();
+  }
+  
+  public static ProjectsHBTable getInstance() {
+    if (instance == null) {
+      instance = new ProjectsHBTable();
+    }
+    return instance;
+  }
+  
+  @Override
+  public String getName() {
+    return NAME;
+  }
   
   /**
    * Compute row key.
@@ -43,8 +62,9 @@ public class ProjectsTable {
     return Bytes.add(new byte[] {type.getValue()}, projectID);
   }
   
-  public static HTableDescriptor getTableDescriptor(
-      DatabaseConfiguration dbConf) {
+  public static HTableDescriptor getTableDescriptor() {
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    
     HTableDescriptor tableDesc = new HTableDescriptor(
         dbConf.getTablePrefix() + NAME);
     

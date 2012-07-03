@@ -16,24 +16,44 @@ import edu.nus.soc.sourcerer.ddb.DatabaseConfiguration;
  * @author Calin-Andrei Burloiu
  *
  */
-public class EntitiesHashTable {
-  public static String NAME = "entities_hash";
+public class EntitiesHashHBTable extends HBTable {
+  private static EntitiesHashHBTable instance = null;
   
-  public static byte[] CF_DEFAULT = Bytes.toBytes("d");
-  public static byte[] COL_ENTITYTYPE = Bytes.toBytes("et");
-  public static byte[] COL_MODIFIERS = Bytes.toBytes("modf");
-  public static byte[] COL_MULTI = Bytes.toBytes("mult");
-  public static byte[] COL_PID = Bytes.toBytes("pid");
-  public static byte[] COL_FID = Bytes.toBytes("fid");
-  public static byte[] COL_OFFSET = Bytes.toBytes("offs");
-  public static byte[] COL_LENGTH = Bytes.toBytes("len");
+  public static final String NAME = "entities_hash";
   
-  public static byte[] CF_METRICS = Bytes.toBytes("m");
-  public static byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
-  public static byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
+  public static final byte[] CF_DEFAULT = Bytes.toBytes("d");
+  public static final byte[] COL_ENTITYTYPE = Bytes.toBytes("et");
+  public static final byte[] COL_FQN = Bytes.toBytes("fqn");
+  public static final byte[] COL_MODIFIERS = Bytes.toBytes("modf");
+  public static final byte[] COL_MULTI = Bytes.toBytes("mult");
+  public static final byte[] COL_PID = Bytes.toBytes("pid");
+  public static final byte[] COL_FID = Bytes.toBytes("fid");
+  public static final byte[] COL_OFFSET = Bytes.toBytes("offs");
+  public static final byte[] COL_LENGTH = Bytes.toBytes("len");
+  
+  public static final byte[] CF_METRICS = Bytes.toBytes("m");
+  public static final byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
+  public static final byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
+  
+  private EntitiesHashHBTable() {
+    super();
+  }
+  
+  public static EntitiesHashHBTable getInstance() {
+    if (instance == null) {
+      instance = new EntitiesHashHBTable();
+    }
+    return instance;
+  }
+  
+  @Override
+  public String getName() {
+    return NAME;
+  }
 
-  public static HTableDescriptor getTableDescriptor(
-      DatabaseConfiguration dbConf) {
+  public static HTableDescriptor getTableDescriptor() {
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    
     HTableDescriptor tableDesc = new HTableDescriptor(
         dbConf.getTablePrefix() + NAME);
     

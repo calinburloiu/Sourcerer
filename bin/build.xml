@@ -40,6 +40,8 @@
   <property name="model" location="../infrastructure/tools/java/model/src" />
 	<property name="syntax-highlighter" location="../infrastructure/tools/java/syntax-highlighter/src" />
   <property name="database" location="../infrastructure/tools/java/database/src" />
+  <property name="distributed-database"
+      location="../infrastructure/tools/java/distributed-database/src" />
   <property name="search-eval" location="../infrastructure/apps/codesearch/src" />
   <property name="core-repository-manager" location="../infrastructure/tools/core/core-repository-manager/src" />
   <property name="search-server" location="../infrastructure/services/search-server/src" />
@@ -54,6 +56,18 @@
   <property name="extractor-bin" location="../infrastructure/tools/java/extractor/bin" />
   <property name="machine-learning" location="../infrastructure/tools/core/machine-learning/src" />
 	<property name="website" location="../website" />
+  
+  <fileset id="lib.classpath" dir="${dist}/lib">
+    <include name="*.jar" />
+  </fileset>
+  
+  <manifestclasspath property="sourcerer-ddb.jar_classpath"
+  	  jarfile="${dist}/sourcerer-ddb.jar">
+    <classpath>
+      <fileset refid="lib.classpath" />
+      <pathelement path="${dist}/conf" />
+    </classpath>
+  </manifestclasspath>
 
   <target name="init">
     <mkdir dir="${build}" />
@@ -67,11 +81,20 @@
 
   <target name="compile-java-tools-core" depends="init-java-tools-core">
     <!-- Compile everything -->
-    <javac destdir="${build-java-tools-core}" debug="on">
+    <javac destdir="${build-java-tools-core}" debug="on" includeantruntime="false">
       <classpath>
         <pathelement path="${classpath}" />
         <fileset dir="${lib}">
           <include name="**/servlet-api.jar" />
+          <include name="**/zookeeper-3.4.3.jar" />
+          <include name="**/slf4j-api-1.5.8.jar" />
+          <include name="**/log4j-1.2.8.jar" />
+          <include name="**/commons-logging-1.1.1.jar" />
+          <include name="**/slf4j-jcl-1.5.8.jar" />
+          <include name="**/commons-lang-2.5.jar" />
+          <include name="**/hbase-0.92.1.jar" />
+          <include name="**/commons-configuration-1.6.jar" />
+          <include name="**/hadoop-core-1.0.1.jar" />
         </fileset>
       </classpath>
       <src path="${utilities}" />
@@ -79,6 +102,7 @@
       <src path="${model}" />
     	<src path="${syntax-highlighter}" />
       <src path="${database}" />
+      <src path="${distributed-database}" />
       <src path="${file-server}" />
     	<src path="${famix-server}" />
     	<src path="${code-browser}" />
@@ -100,6 +124,9 @@
     </copy>
     <copy todir="${build-java-tools-core}">
       <fileset dir="${database}" includes="**/*.java" />
+    </copy>
+    <copy todir="${build-java-tools-core}">
+          <fileset dir="${distributed-database}" includes="**/*.java" />
     </copy>
     <copy todir="${build-java-tools-core}">
       <fileset dir="${file-server}" includes="**/*.java" />
@@ -137,6 +164,19 @@
     </jar>
   </target>
 
+  <target name="sourcerer-ddb" depends="compile-java-tools-core">
+    <jar destfile="${dist}/sourcerer-ddb.jar" basedir="${build-java-tools-core}">
+      <manifest>
+        <attribute name="Class-Path" value="${sourcerer-ddb.jar_classpath}" />
+        <attribute name="Main-Class" value="edu.nus.soc.sourcerer.ddb.tools.Main" />
+      </manifest>
+    </jar>
+    <!-- File 'META-INF/INDEX.LIST' from the JAR prevents classpath manifest to be read.-->
+    <exec executable="zip">
+      <arg line="-d ${dist}/sourcerer-ddb.jar META-INF/INDEX.LIST" />
+    </exec>
+  </target>
+  
   <target name="file-server" depends="compile-java-tools-core">
     <war destfile="${dist}/file-server.war" webxml="${file-server}/edu/uci/ics/sourcerer/server/file/web.xml">
       <lib dir="${file-server}/edu/uci/ics/sourcerer/server/file">

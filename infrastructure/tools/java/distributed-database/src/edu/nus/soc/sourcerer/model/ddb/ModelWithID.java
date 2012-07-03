@@ -15,9 +15,19 @@ import edu.nus.soc.sourcerer.util.StringSerializationException;
  * @author Calin-Andrei Burloiu
  *
  */
-public class ModelWithID {
+public class ModelWithID implements Model {
   protected byte[] id;
   
+  public ModelWithID() {
+    super();
+    this.id = null;
+  }
+  
+  public ModelWithID(byte[] id) {
+    super();
+    this.id = id;
+  }
+
   /**
    * Computes MD5 hash for the byte representation of the provided fields.
    * Network byte order is used.
@@ -27,11 +37,23 @@ public class ModelWithID {
    * hash is computed
    * @param fields
    */
-  public byte[] computeId(int inputBytesCount, Field ... fields) {
+  public byte[] computeId(int inputBytesCount, String ... fieldNames) {
     ByteBuffer bb = ByteBuffer.allocate(inputBytesCount);
+    Field field;
     
-    for (Field field : fields) {
+    for (String fieldName : fieldNames) {
       try {
+        field = this.getClass().getDeclaredField(fieldName);
+      } catch (SecurityException e) {
+        throw new Error("Reflection programming error.", e);
+      } catch (NoSuchFieldException e) {
+        throw new Error("Reflection programming error.", e);
+      }
+      
+      try {
+        if (field.get(this) == null)
+          continue;
+        
         if (field.getType() == String.class) {
           String strField = (String)field.get(this);
           try {
@@ -41,29 +63,34 @@ public class ModelWithID {
                 "Your platform might not support UTF-8.", e);
           }
         }
-        else if (field.getType() == Byte.TYPE) {
-          bb.put(field.getByte(this));
+        else if (field.get(this) != null && field.getType() == Byte.class) {
+          bb.put((Byte)field.get(this));
         }
-        else if (field.getType() == Short.TYPE) {
-          bb.putShort(field.getShort(this));
+        else if (field.get(this) != null && field.getType() == Short.class) {
+          bb.putShort((Short)field.get(this));
         }
-        else if (field.getType() == Integer.TYPE) {
-          bb.putInt(field.getInt(this));
+        else if (field.get(this) != null && field.getType() == Integer.class) {
+          bb.putInt((Integer)field.get(this));
         }
-        else if (field.getType() == Long.TYPE) {
-          bb.putLong(field.getLong(this));
+        else if (field.get(this) != null && field.getType() == Long.class) {
+          bb.putLong((Long)field.get(this));
         }
-        else if (field.getType() == Float.TYPE) {
-          bb.putFloat(field.getFloat(this));
+        else if (field.get(this) != null && field.getType() == Float.class) {
+          bb.putFloat((Float)field.get(this));
         }
-        else if (field.getType() == Double.TYPE) {
-          bb.putDouble(field.getDouble(this));
+        else if (field.get(this) != null && field.getType() == Double.class) {
+          bb.putDouble((Double)field.get(this));
         }
-        else if (field.getType() == Boolean.TYPE) {
-          bb.put((byte)(field.getBoolean(this) ? 0x01 : 0x00));
+        else if (field.get(this) != null && field.getType() == Boolean.class) {
+          bb.put((byte)((Boolean)field.get(this) ? 0x01 : 0x00));
         }
-        else if (field.getType() == Character.TYPE) {
-          bb.putChar(field.getChar(this));
+        else if (field.get(this) != null && field.getType() == Character.class) {
+          bb.putChar((Character)field.get(this));
+        }
+        else if (field.get(this) != null && field.getType().isArray()
+            && field.getType().getComponentType() == Byte.TYPE) {
+          byte[] byteArray = (byte[])field.get(this);
+          bb.put(byteArray);
         }
       } catch (IllegalAccessException e) {
         throw new Error("Reflection programming error.", e);
@@ -88,5 +115,16 @@ public class ModelWithID {
   public byte[] getId() {
     return id;
   }
+  
+//  public static void main(String[] args) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+//    ModelWithID m = new ModelWithID(new byte[] {'C', 'a', 'B'});
+//    
+//    Field field = m.getClass().getDeclaredField("id");
+//    System.out.println("Type: " + field.getType().toString() + "\nIsArray: "
+//        + field.getType().isArray() + "\nComponentType: " + field.getType().getComponentType());
+//    
+//    byte[] id2 = (byte[])field.get(m);
+//    System.out.println(new String(id2));
+//  }
 
 }
