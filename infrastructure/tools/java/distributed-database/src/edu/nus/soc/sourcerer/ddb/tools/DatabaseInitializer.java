@@ -32,9 +32,17 @@ import static edu.uci.ics.sourcerer.util.io.Logging.logger;
 public class DatabaseInitializer {
   
   HBaseAdmin admin = null;
-  protected Vector<HTableDescriptor> tables = new Vector<HTableDescriptor>(16);
+  protected Vector<HTableDescriptor> tables = null;
   
-  public DatabaseInitializer() throws HBaseConnectionException {
+  /**
+   * Construct object that will initialize the table identified by the 
+   * descriptor. Pass null to initialize all tables.
+   * 
+   * @param tableDescriptor descriptor of table to be initialized
+   * @throws HBaseConnectionException
+   */
+  public DatabaseInitializer(HTableDescriptor tableDescriptor)
+      throws HBaseConnectionException {
     Configuration conf = HBaseConfiguration.create();
     try {
       admin = new HBaseAdmin(conf);
@@ -44,11 +52,21 @@ public class DatabaseInitializer {
       throw new HBaseConnectionException(e);
     }
     
-    tables.add(ProjectsHBTable.getTableDescriptor());
-    tables.add(FilesHBTable.getTableDescriptor());
-    tables.add(EntitiesHBTable.getTableDescriptor());
-    tables.add(EntitiesHashHBTable.getTableDescriptor());
-    tables.add(InverseRelationsHBTable.getTableDescriptor());
+    tables = new Vector<HTableDescriptor>(16);
+    if (tableDescriptor == null) {
+      tables.add(ProjectsHBTable.getTableDescriptor());
+      tables.add(FilesHBTable.getTableDescriptor());
+      tables.add(EntitiesHBTable.getTableDescriptor());
+      tables.add(EntitiesHashHBTable.getTableDescriptor());
+      tables.add(InverseRelationsHBTable.getTableDescriptor());
+    }
+    else {
+      tables.add(tableDescriptor);
+    }
+  }
+  
+  public DatabaseInitializer() throws HBaseConnectionException {
+    
   }
   
   /**

@@ -17,6 +17,7 @@
  -->
 <!-- @author Joel Ossher (jossher@uci.edu) -->
 <!-- @author Sushil Bajracharya (bajracharya@gmail.com) -->
+<!-- @author Calin-Andrei Burloiu (calin.burloiu[at]gmail[dot]com) -->
 <project name="Sourcerer Infrastructure" basedir=".">
   <description>
     Build file for the Sourcerer Infrastructure.
@@ -42,6 +43,8 @@
   <property name="database" location="../infrastructure/tools/java/database/src" />
   <property name="distributed-database"
       location="../infrastructure/tools/java/distributed-database/src" />
+  <property name="distributed-repository-manager"
+      location="../infrastructure/tools/java/distributed-repository-manager/src" />
   <property name="search-eval" location="../infrastructure/apps/codesearch/src" />
   <property name="core-repository-manager" location="../infrastructure/tools/core/core-repository-manager/src" />
   <property name="search-server" location="../infrastructure/services/search-server/src" />
@@ -68,6 +71,14 @@
       <pathelement path="${dist}/conf" />
     </classpath>
   </manifestclasspath>
+  
+  <manifestclasspath property="sourcerer-drepo.jar_classpath"
+    	  jarfile="${dist}/sourcerer-drepo.jar">
+      <classpath>
+        <fileset refid="lib.classpath" />
+        <pathelement path="${dist}/conf" />
+      </classpath>
+    </manifestclasspath>
 
   <target name="init">
     <mkdir dir="${build}" />
@@ -90,6 +101,7 @@
           <include name="**/slf4j-api-1.5.8.jar" />
           <include name="**/log4j-1.2.8.jar" />
           <include name="**/commons-logging-1.1.1.jar" />
+          <include name="**/commons-io-1.4.jar" />
           <include name="**/slf4j-jcl-1.5.8.jar" />
           <include name="**/commons-lang-2.5.jar" />
           <include name="**/hbase-0.92.1.jar" />
@@ -103,6 +115,7 @@
     	<src path="${syntax-highlighter}" />
       <src path="${database}" />
       <src path="${distributed-database}" />
+      <src path="${distributed-repository-manager}" />
       <src path="${file-server}" />
     	<src path="${famix-server}" />
     	<src path="${code-browser}" />
@@ -174,6 +187,19 @@
     <!-- File 'META-INF/INDEX.LIST' from the JAR prevents classpath manifest to be read.-->
     <exec executable="zip">
       <arg line="-d ${dist}/sourcerer-ddb.jar META-INF/INDEX.LIST" />
+    </exec>
+  </target>
+  
+  <target name="sourcerer-drepo" depends="compile-java-tools-core">
+  	<jar destfile="${dist}/sourcerer-drepo.jar" basedir="${build-java-tools-core}">
+  	<manifest>
+      <attribute name="Class-Path" value="${sourcerer-drepo.jar_classpath}" />
+      <attribute name="Main-Class" value="edu.nus.soc.sourcerer.drepo.tools.Main" />
+    </manifest>
+  	</jar>
+    <!-- File 'META-INF/INDEX.LIST' from the JAR prevents classpath manifest to be read.-->
+    <exec executable="zip">
+      <arg line="-d ${dist}/sourcerer-drepo.jar META-INF/INDEX.LIST" />
     </exec>
   </target>
   
