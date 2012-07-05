@@ -42,7 +42,7 @@ public enum Entity {
     PARAMETERIZED_TYPE  ((byte)0x12),
     DUPLICATE           ((byte)0x13)
     ;
-    
+
     protected byte value;
     
     private Entity(byte value) {
