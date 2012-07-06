@@ -9,7 +9,6 @@
 			<attribute name="javadoc_location" value="file:/home/calin/opt/hbase-0.92.1/docs/apidocs"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/lib/hadoop-core-1.0.1.jar"/>
 	<classpathentry kind="lib" path="/conf"/>
 	<classpathentry kind="lib" path="/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/lib/commons-configuration-1.6.jar"/>
@@ -19,5 +18,6 @@
 	<classpathentry kind="lib" path="/lib/slf4j-jcl-1.5.8.jar"/>
 	<classpathentry kind="lib" path="/lib/zookeeper-3.4.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/database"/>
+	<classpathentry kind="lib" path="/lib/hadoop-core-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
