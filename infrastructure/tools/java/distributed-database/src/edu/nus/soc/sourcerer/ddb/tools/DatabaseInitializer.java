@@ -66,7 +66,7 @@ public class DatabaseInitializer {
   }
   
   public DatabaseInitializer() throws HBaseConnectionException {
-    
+    this(null);
   }
   
   /**
