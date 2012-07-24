@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import edu.nus.soc.sourcerer.ddb.DatabaseConfiguration;
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
+import edu.nus.soc.sourcerer.ddb.queries.ProjectsRetriever;
+import edu.nus.soc.sourcerer.model.ddb.ProjectModel;
+import edu.uci.ics.sourcerer.model.Project;
 import edu.uci.ics.sourcerer.util.io.Property;
 import edu.uci.ics.sourcerer.util.io.properties.BooleanProperty;
 import edu.uci.ics.sourcerer.util.io.properties.IntegerProperty;
@@ -65,4 +68,23 @@ public class DDBTools {
     }
   }
 
+  public static void retrieveProjects() {
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    dbConf.setTablePrefix(HBASE_TABLE_PREFIX.getValue());
+    
+    ProjectsRetriever pr;
+    ProjectModel project = null;
+    try {
+      pr = new ProjectsRetriever();
+      project = pr.retrieveProjects(Project.CRAWLED, 
+          new byte[] {0x06, (byte)0xCD, 0x2D, (byte)0xA6, 0x01, (byte)0x90, 0x45, 0x55, 0x24,
+          0x74, (byte)0x9B, 0x0E, 0x16, (byte)0xCF, 0x50, (byte)0xDD});
+    } catch (HBaseConnectionException e) {
+      logger.severe("Could not connect to HBase database: " + e.getMessage());
+    } catch (HBaseException e) {
+      logger.severe("An HBase error occured: " + e.getMessage());
+    }
+    
+    System.out.println(project);
+  }
 }

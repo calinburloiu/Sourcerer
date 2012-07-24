@@ -6,15 +6,12 @@ import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.EMPTY_EXISTING;
 import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.UPDATE_EXISTING;
 import static edu.uci.ics.sourcerer.repo.general.AbstractRepository.INPUT_REPO;
 
-import java.io.File;
-
 import edu.nus.soc.sourcerer.ddb.DatabaseConfiguration;
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
 import edu.nus.soc.sourcerer.ddb.tables.SourcesHBTable;
 import edu.nus.soc.sourcerer.ddb.tools.DatabaseInitializer;
 import edu.uci.ics.sourcerer.util.io.Property;
-import edu.uci.ics.sourcerer.util.io.properties.FileProperty;
 import edu.uci.ics.sourcerer.util.io.properties.IntegerProperty;
 
 public class RepoTools {

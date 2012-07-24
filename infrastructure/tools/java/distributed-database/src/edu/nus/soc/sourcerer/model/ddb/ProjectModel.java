@@ -117,8 +117,14 @@ public class ProjectModel extends ModelWithID {
 
   @Override
   public String toString() {
-    return "project " + name + " ("
-        + Serialization.byteArrayToHexString(id) + ")";
+    return "project(name=\"" + name + "\", ID=\""
+        + Serialization.byteArrayToHexString(id) + "\", "
+        + "type=" + type.toString() + "(0x"
+        + Serialization.byteArrayToHexString(new byte[] {type.getValue()})
+        + "), description=\"" + description + "\", version=\"" + version
+        + "\", group=\"" + group + "\", path=\"" + path + "\", hash=\""
+        + Serialization.byteArrayToHexString(hash) + "\", hasSource="
+        + hasSource + ", loc=" + loc + ", nwloc=" + nwloc + ")";
   }
   
 //  public static void main(String args[]) {

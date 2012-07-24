@@ -26,6 +26,13 @@ public class Main {
         }
       }.setProperties(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD,
           HBASE_TABLE_PREFIX);
+  
+  public static final Command RETRIEVE_PROJECTS =
+      new Command("retrieve-projects", "Search projects by type and ID.") {
+        protected void action() {
+          DDBTools.retrieveProjects();
+        }
+      }.setProperties(HBASE_TABLE_PREFIX);
       
   /**
    * @param args
