@@ -6,6 +6,7 @@ import java.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.nus.soc.sourcerer.ddb.DatabaseConfiguration;
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
 import edu.nus.soc.sourcerer.ddb.queries.ProjectModelInserter;
@@ -20,7 +21,8 @@ public class QueriesTest {
   
   @Before
   public void setUp() {
-    
+    DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
+    dbConf.setTablePrefix("testing_");
   }
 
   @Test
@@ -64,6 +66,8 @@ public class QueriesTest {
     }
     
     // Check if the inserted project matches the retrieved project.
-    
+    assertEquals(inputProject.getName(), outputProject.getName());
+    // ...
+    assertArrayEquals(inputProject.getHash(), outputProject.getHash());
   }
 }

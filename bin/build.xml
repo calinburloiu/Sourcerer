@@ -45,6 +45,8 @@
       location="../infrastructure/tools/java/distributed-database/src" />
   <property name="distributed-repository-manager"
       location="../infrastructure/tools/java/distributed-repository-manager/src" />
+  <property name="testing"
+	  location="../testing/src" />
   <property name="search-eval" location="../infrastructure/apps/codesearch/src" />
   <property name="core-repository-manager" location="../infrastructure/tools/core/core-repository-manager/src" />
   <property name="search-server" location="../infrastructure/services/search-server/src" />
@@ -71,6 +73,14 @@
       <pathelement path="${dist}/conf" />
     </classpath>
   </manifestclasspath>
+	
+	<manifestclasspath property="testing.jar_classpath"
+	  	  jarfile="${dist}/testing.jar">
+	    <classpath>
+	      <fileset refid="lib.classpath" />
+	      <pathelement path="${dist}/conf" />
+	    </classpath>
+	  </manifestclasspath>
   
   <manifestclasspath property="sourcerer-drepo.jar_classpath"
     	  jarfile="${dist}/sourcerer-drepo.jar">
@@ -107,6 +117,7 @@
           <include name="**/hbase-0.92.1.jar" />
           <include name="**/commons-configuration-1.6.jar" />
           <include name="**/hadoop-core-1.0.1.jar" />
+          <include name="**/junit-4.3.jar" />
         </fileset>
       </classpath>
       <src path="${utilities}" />
@@ -116,6 +127,7 @@
       <src path="${database}" />
       <src path="${distributed-database}" />
       <src path="${distributed-repository-manager}" />
+      <src path="${testing}" />
       <src path="${file-server}" />
     	<src path="${famix-server}" />
     	<src path="${code-browser}" />
@@ -202,7 +214,20 @@
       <arg line="-d ${dist}/sourcerer-drepo.jar META-INF/INDEX.LIST" />
     </exec>
   </target>
-  
+
+  <target name="testing" depends="compile-java-tools-core">
+    <jar destfile="${dist}/testing.jar" basedir="${build-java-tools-core}">
+      <manifest>
+        <attribute name="Class-Path" value="${testing.jar_classpath}" />
+        <!--<attribute name="Main-Class" value="edu.nus.soc.sourcerer.testing.tools.Main" />-->
+      </manifest>
+    </jar>
+    <!-- File 'META-INF/INDEX.LIST' from the JAR prevents classpath manifest to be read.-->
+    <exec executable="zip">
+      <arg line="-d ${dist}/testing.jar META-INF/INDEX.LIST" />
+    </exec>
+  </target>
+	
   <target name="file-server" depends="compile-java-tools-core">
     <war destfile="${dist}/file-server.war" webxml="${file-server}/edu/uci/ics/sourcerer/server/file/web.xml">
       <lib dir="${file-server}/edu/uci/ics/sourcerer/server/file">
