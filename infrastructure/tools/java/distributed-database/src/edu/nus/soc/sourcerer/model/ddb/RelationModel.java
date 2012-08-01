@@ -1,11 +1,8 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
-import edu.uci.ics.sourcerer.model.Relation;
-import edu.uci.ics.sourcerer.model.RelationClass;
-
 public class RelationModel implements Model {
-  protected Relation type;
-  protected RelationClass relationClass;
+  protected Byte type;
+  protected Byte relationClass;
   protected byte[] sourceID;
   protected byte[] targetID;
   protected byte[] projectID;
@@ -13,7 +10,10 @@ public class RelationModel implements Model {
   protected Integer offset;
   protected Integer length;
   
-  public RelationModel(Relation type, RelationClass relationClass, byte[] sourceID, byte[] targetID, byte[] projectID, byte[] fileID, Integer offset, Integer length) {
+  // Extra
+  protected Byte fileType;
+  
+  public RelationModel(Byte type, Byte relationClass, byte[] sourceID, byte[] targetID, byte[] projectID, byte[] fileID, Integer offset, Integer length) {
     super();
     this.type = type;
     this.relationClass = relationClass;
@@ -24,12 +24,27 @@ public class RelationModel implements Model {
     this.offset = offset;
     this.length = length;
   }
+  
+  public RelationModel(Byte type, Byte relationClass, byte[] sourceID,
+      byte[] targetID, byte[] projectID, byte[] fileID,
+      Integer offset, Integer length, Byte fileType) {
+    super();
+    this.type = type;
+    this.relationClass = relationClass;
+    this.sourceID = sourceID;
+    this.targetID = targetID;
+    this.projectID = projectID;
+    this.fileID = fileID;
+    this.offset = offset;
+    this.length = length;
+    this.fileType = fileType;
+  }
 
-  public Relation getType() {
+  public Byte getType() {
     return type;
   }
 
-  public RelationClass getRelationClass() {
+  public Byte getRelationClass() {
     return relationClass;
   }
   
@@ -41,7 +56,7 @@ public class RelationModel implements Model {
    * @return
    */
   public byte getRelationKind() {
-    return (byte)(type.getValue() | relationClass.getValue());
+    return (byte)(type | relationClass);
   }
 
   public byte[] getSourceID() {
@@ -67,5 +82,9 @@ public class RelationModel implements Model {
   public Integer getLength() {
     return length;
   }
-    
+
+  public Byte getFileType() {
+    return fileType;
+  }
+
 }

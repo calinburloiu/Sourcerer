@@ -11,27 +11,27 @@ import edu.uci.ics.sourcerer.model.Relation;
 import edu.uci.ics.sourcerer.model.RelationClass;
 
 /**
- * This class contains information about HBase inverse relations table including
+ * This class contains information about HBase direct relations table including
  * table name, column families and column qualifiers name and a static method
  * which retrieves an HTableDescriptor.
  * 
  * @author Calin-Andrei Burloiu
  *
  */
-public class InverseRelationsHBTable extends HBTable {
-  private static InverseRelationsHBTable instance = null;
+public class DirectRelationsHBTable extends HBTable {
+  private static DirectRelationsHBTable instance = null;
   
-  public static final String NAME = "inverse_relations";
+  public static final String NAME = "direct_relations";
   
   public static final byte[] CF_DEFAULT = Bytes.toBytes("d");
   
-  private InverseRelationsHBTable() {
+  private DirectRelationsHBTable() {
     super();
   }
   
-  public static InverseRelationsHBTable getInstance() {
+  public static DirectRelationsHBTable getInstance() {
     if (instance == null) {
-      instance = new InverseRelationsHBTable();
+      instance = new DirectRelationsHBTable();
     }
     return instance;
   }
@@ -49,11 +49,11 @@ public class InverseRelationsHBTable extends HBTable {
    * @param sourceEntity
    * @return
    */
-  public static byte[] row(byte[] targetEntity, Relation relationType,
-      RelationClass relationClass, byte[] sourceEntity) {
-    return Bytes.add(targetEntity,
-        new byte[] {(byte) (relationType.getValue() | relationClass.getValue())},
-        sourceEntity);
+  public static byte[] row(byte[] sourceEntity, Relation relationType,
+      RelationClass relationClass, byte[] targetEntity) {
+    return Bytes.add(sourceEntity,
+        new byte[] {(byte) (relationType.getValue() | relationClass.getValue())}, 
+        targetEntity);
   }
   
   /**

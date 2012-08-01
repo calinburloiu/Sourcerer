@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
+import edu.nus.soc.sourcerer.ddb.tables.DirectRelationsHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.EntitiesHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.EntitiesHashHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.FilesHBTable;
@@ -59,6 +60,7 @@ public class DatabaseInitializer {
       tables.add(EntitiesHBTable.getTableDescriptor());
       tables.add(EntitiesHashHBTable.getTableDescriptor());
       tables.add(InverseRelationsHBTable.getTableDescriptor());
+      tables.add(DirectRelationsHBTable.getTableDescriptor());
     }
     else {
       tables.add(tableDescriptor);

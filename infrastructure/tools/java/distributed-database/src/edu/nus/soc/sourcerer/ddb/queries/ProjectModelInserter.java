@@ -44,7 +44,7 @@ public class ProjectModelInserter implements ModelInserter<ProjectModel> {
     for (ProjectModel project : models) {
       try {
         put = new Put(Bytes.add(
-            new byte[] {project.getType().getValue()}, project.getId()));
+            new byte[] {project.getType()}, project.getId()));
         
         // Default Column Family
         put.add(ProjectsHBTable.CF_DEFAULT, ProjectsHBTable.COL_NAME,

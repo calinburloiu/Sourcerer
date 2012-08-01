@@ -1,5 +1,7 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
+import edu.nus.soc.sourcerer.util.EnumUtil;
+import edu.nus.soc.sourcerer.util.Serialization;
 import edu.uci.ics.sourcerer.model.File;
 
 
@@ -10,7 +12,7 @@ import edu.uci.ics.sourcerer.model.File;
  * 
  */
 public class FileModel extends ModelWithID {
-  protected File type;
+  protected Byte type;
   protected byte[] projectID;
   
   // Meta
@@ -23,7 +25,7 @@ public class FileModel extends ModelWithID {
   protected Integer loc;
   protected Integer nwloc;
   
-  public FileModel(byte[] fileID, File type, byte[] projectID, String name,
+  public FileModel(byte[] fileID, Byte type, byte[] projectID, String name,
       String path, byte[] hash, byte[] jarProjectID, Integer loc,
       Integer nwloc) {
     super(fileID);
@@ -37,7 +39,7 @@ public class FileModel extends ModelWithID {
     this.nwloc = nwloc;
   }
 
-  public FileModel(File type, byte[] projectID, String name, String path,
+  public FileModel(Byte type, byte[] projectID, String name, String path,
       byte[] hash, byte[] jarProjectID, Integer loc, Integer nwloc) {
     super();
     this.type = type;
@@ -50,18 +52,30 @@ public class FileModel extends ModelWithID {
     this.nwloc = nwloc;
     
     // Compute ID.
-    if (type == File.JAR) {
+    if (type == File.JAR.getValue()) {
       id = computeId(1024, "name");
     } else {
       id = computeId(1024, "path");
     }
   }
   
-  public FileModel(File type, String name, String path) {
+  public FileModel(Byte type, String name, String path) {
     this(type, null, name, path, null, null, null, null);
   }
+  
+  @Override
+  public String toString() {
+    return String.format("file(ID=\"%s\", type=%s(0x%s), name=\"%s\", "
+        + "path=\"%s\", projectID=\"%s\", hash=\"%s\", jarProjectID=\"%s\", "
+        + "loc=%d, nwloc=%d)", Serialization.byteArrayToHexString(id),
+        EnumUtil.getEnumByValue(File.values(), type),
+        Serialization.byteArrayToHexString(new byte[] {type}), name, path,
+        Serialization.byteArrayToHexString(projectID),
+        Serialization.byteArrayToHexString(hash),
+        Serialization.byteArrayToHexString(jarProjectID), loc, nwloc);
+  }
 
-  public File getType() {
+  public Byte getType() {
     return type;
   }
 

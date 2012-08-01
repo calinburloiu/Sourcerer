@@ -17,10 +17,12 @@
  */
 package edu.uci.ics.sourcerer.model;
 
+import edu.nus.soc.sourcerer.util.EnumWithValue;
+
 /**
  * @author Joel Ossher (jossher@uci.edu)
  */
-public enum RelationClass {
+public enum RelationClass implements EnumWithValue<Byte> {
   UNKNOWN         ((byte)0x00),
   JAVA_LIBRARY    ((byte)0x20),
   INTERNAL        ((byte)0x40),
@@ -35,7 +37,7 @@ public enum RelationClass {
     this.value = value;
   }
   
-  public byte getValue() {
+  public Byte getValue() {
     return value;
   }
 }

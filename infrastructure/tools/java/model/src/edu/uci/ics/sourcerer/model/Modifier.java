@@ -19,12 +19,13 @@ package edu.uci.ics.sourcerer.model;
 
 import java.util.Set;
 
+import edu.nus.soc.sourcerer.util.EnumWithValue;
 import edu.uci.ics.sourcerer.util.Helper;
 
 /**
  * @author Joel Ossher (jossher@uci.edu)
  */
-public enum Modifier {
+public enum Modifier implements EnumWithValue<Integer> {
   PUBLIC(0x0001),
   PRIVATE(0x0002),
   PROTECTED(0x0004),
@@ -43,7 +44,7 @@ public enum Modifier {
     this.value = value;
   }
 
-  public int getValue() {
+  public Integer getValue() {
     return value;
   }
   

@@ -1,5 +1,6 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
+import edu.nus.soc.sourcerer.util.EnumUtil;
 import edu.nus.soc.sourcerer.util.Serialization;
 import edu.uci.ics.sourcerer.model.Project;
 
@@ -10,7 +11,7 @@ import edu.uci.ics.sourcerer.model.Project;
  * 
  */
 public class ProjectModel extends ModelWithID {
-  protected Project type;
+  protected Byte type;
   protected String name;
   protected String description;
   protected String version;
@@ -24,7 +25,7 @@ public class ProjectModel extends ModelWithID {
   // Non white space Lines of Code
   protected Integer nwloc;
 
-  public ProjectModel(byte[] projectID, Project type, String name,
+  public ProjectModel(byte[] projectID, Byte type, String name,
       String description, String version, String group, String path,
       byte[] hash, Boolean hasSource, Integer loc, Integer nwloc) {
     super(projectID);
@@ -40,7 +41,7 @@ public class ProjectModel extends ModelWithID {
     this.nwloc = nwloc;
   }
   
-  public ProjectModel(Project type, String name,
+  public ProjectModel(Byte type, String name,
       String description, String version, String group, String path,
       byte[] hash, Boolean hasSource, Integer loc, Integer nwloc) {
     super();
@@ -56,7 +57,7 @@ public class ProjectModel extends ModelWithID {
     this.nwloc = nwloc;
     
     // Compute ID.
-    if (type == Project.SYSTEM) {
+    if (type == Project.SYSTEM.getValue()) {
       if (name.equals("primitives")) {
         id = new byte[] {'p', 'r', 'i', 'm', 'i', 't', 'i', 'v', 'e', 's',
             '\0', '\0', '\0', '\0', '\0', '\0'};
@@ -64,18 +65,20 @@ public class ProjectModel extends ModelWithID {
         id = new byte[] {'u', 'n', 'k', 'n', 'o', 'w', 'n', 's',
             '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
       }
-    } else if (type == Project.JAVA_LIBRARY || type == Project.CRAWLED) {
+    } else if (type == Project.JAVA_LIBRARY.getValue()
+        || type == Project.CRAWLED.getValue()) {
       id = computeId(1024, "path");
-    } else if (type == Project.JAR || type == Project.MAVEN) {
+    } else if (type == Project.JAR.getValue()
+        || type == Project.MAVEN.getValue()) {
       id = hash;
     }
   }
   
-  public ProjectModel(Project type, String name, String path, byte[] hash) {
+  public ProjectModel(Byte type, String name, String path, byte[] hash) {
     this(type, name, null, null, null, path, hash, null, null, null);
   }
 
-  public Project getType() {
+  public Byte getType() {
     return type;
   }
 
@@ -119,8 +122,8 @@ public class ProjectModel extends ModelWithID {
   public String toString() {
     return "project(name=\"" + name + "\", ID=\""
         + Serialization.byteArrayToHexString(id) + "\", "
-        + "type=" + type.toString() + "(0x"
-        + Serialization.byteArrayToHexString(new byte[] {type.getValue()})
+        + "type=" + EnumUtil.getEnumByValue(Project.values(), type) + "(0x"
+        + Serialization.byteArrayToHexString(new byte[] {type})
         + "), description=\"" + description + "\", version=\"" + version
         + "\", group=\"" + group + "\", path=\"" + path + "\", hash=\""
         + Serialization.byteArrayToHexString(hash) + "\", hasSource="

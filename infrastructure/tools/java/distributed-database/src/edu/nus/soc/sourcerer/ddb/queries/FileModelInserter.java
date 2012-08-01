@@ -43,7 +43,7 @@ public class FileModelInserter implements ModelInserter<FileModel> {
     for (FileModel file : models) {
       try {
         put = new Put(Bytes.add(file.getProjectID(),
-            new byte[] {file.getType().getValue()}, file.getId()));
+            new byte[] {file.getType()}, file.getId()));
         
         // Default column family
         put.add(FilesHBTable.CF_DEFAULT, FilesHBTable.COL_NAME,

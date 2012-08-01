@@ -1,8 +1,6 @@
 package edu.nus.soc.sourcerer.ddb.tools;
 
-import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.EMPTY_EXISTING;
-import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.UPDATE_EXISTING;
-import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.HBASE_TABLE_PREFIX;
+import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.*;
 
 import static edu.uci.ics.sourcerer.db.util.DatabaseConnection.DATABASE_PASSWORD;
 import static edu.uci.ics.sourcerer.db.util.DatabaseConnection.DATABASE_URL;
@@ -26,13 +24,34 @@ public class Main {
         }
       }.setProperties(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD,
           HBASE_TABLE_PREFIX);
+
+  public static final Command HEX_TO_HBASESTR =
+      new Command("hex-to-hbasestr", "Convert a hex string to an HBase IRB string.") {
+        protected void action() {
+          DDBTools.hexToHBaseStr();
+        }
+      }.setProperties(HEX_STR);
+      
+//  public static final Command HBASESTR_TO_HEX =
+//      new Command("hbasestr-to-hex", "Convert an HBase IRB string to a hex string.") {
+//        protected void action() {
+//          DDBTools.hBaseStrToHex();
+//        }
+//      }.setProperties(HBASE_STR);
   
   public static final Command RETRIEVE_PROJECTS =
-      new Command("retrieve-projects", "Search projects by type and ID.") {
+      new Command("retrieve-projects", "Search projects by: project-type [project-id].") {
         protected void action() {
           DDBTools.retrieveProjects();
         }
-      }.setProperties(HBASE_TABLE_PREFIX);
+      }.setProperties(PROJECT_TYPE, PROJECT_ID, HBASE_TABLE_PREFIX);
+  
+  public static final Command RETRIEVE_FILES =
+      new Command("retrieve-files", "Search files by: project-id [file-type [file-id]].") {
+        protected void action() {
+          DDBTools.retrieveFiles();
+        }
+      }.setProperties(PROJECT_ID, FILE_TYPE, FILE_ID, HBASE_TABLE_PREFIX);
       
   /**
    * @param args

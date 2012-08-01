@@ -146,7 +146,8 @@ public class MySQLImporter {
       Integer nwloc = (Integer)result.getObject("nwloc");
       
       ProjectModel project = new ProjectModel(
-          projectType == null ? Project.UNKNOWN : Project.valueOf(projectType), 
+          projectType == null ? Project.UNKNOWN.getValue()
+              : Project.valueOf(projectType).getValue(), 
           result.getString(ProjectsTable.NAME.getName()),
           result.getString(ProjectsTable.DESCRIPTION.getName()), 
           result.getString(ProjectsTable.VERSION.getName()), 
@@ -209,7 +210,8 @@ public class MySQLImporter {
       byte[] projectHash =
           Serialization.hexStringToByteArray(result.getString("project_hash"));
       byte[] projectID = new ProjectModel(
-          projectType == null ? Project.UNKNOWN : Project.valueOf(projectType),
+          projectType == null ? Project.UNKNOWN.getValue()
+              : Project.valueOf(projectType).getValue(),
           result.getString("project_name"), projectPath,
           projectHash).getId();
       
@@ -221,7 +223,8 @@ public class MySQLImporter {
         path = (projectPath == null ? "" : projectPath) + filePath;
       
       FileModel project = new FileModel(
-          fileType == null ? File.UNKNOWN : File.valueOf(fileType), 
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue(), 
           projectID, result.getString(FilesTable.NAME.getName()), path,
           Serialization.hexStringToByteArray(result.getString(
               FilesTable.HASH.getName())), projectHash, loc, nwloc);
@@ -278,7 +281,8 @@ public class MySQLImporter {
       byte[] projectHash =
           Serialization.hexStringToByteArray(result.getString("project_hash"));
       byte[] projectID = new ProjectModel(
-          projectType == null ? Project.UNKNOWN : Project.valueOf(projectType),
+          projectType == null ? Project.UNKNOWN.getValue()
+              : Project.valueOf(projectType).getValue(),
           result.getString("project_name"), projectPath,
           projectHash).getId();
       
@@ -288,7 +292,8 @@ public class MySQLImporter {
           + result.getString("file_path");
       String fileName = result.getString("file_name");
       byte[] fileID = new FileModel(
-          fileType == null ? File.UNKNOWN : File.valueOf(fileType),
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue(),
           fileName, filePath).getId();
       
       // Entity type
@@ -309,14 +314,16 @@ public class MySQLImporter {
           (Integer)result.getObject("nwloc");
       
       EntityModel entity = new EntityModel(
-          entityType == null ? Entity.UNKNOWN : Entity.valueOf(entityType),
+          entityType == null ? Entity.UNKNOWN.getValue()
+              : Entity.valueOf(entityType).getValue(),
           result.getString(EntitiesTable.FQN.getName()), projectID, fileID,
           lModifiers == null ? null : lModifiers.intValue(),
           lMulti == null ? null : lMulti.intValue(),
           lOffset == null ? null : lOffset.intValue(),
           lLength == null ? null : lLength.intValue(),
           loc, nwloc,
-          fileType == null ? File.UNKNOWN : File.valueOf(fileType));
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue());
       
       return entity;
     }
@@ -393,7 +400,8 @@ public class MySQLImporter {
           Serialization.hexStringToByteArray(
               result.getString(colPrefix + "project_hash"));
       byte[] projectID = new ProjectModel(
-          projectType == null ? Project.UNKNOWN : Project.valueOf(projectType),
+          projectType == null ? Project.UNKNOWN.getValue()
+              : Project.valueOf(projectType).getValue(),
           result.getString(colPrefix + "project_name"), projectPath,
           projectHash).getId();
       
@@ -403,7 +411,8 @@ public class MySQLImporter {
           + result.getString(colPrefix + "file_path");
       String fileName = result.getString(colPrefix + "file_name");
       byte[] fileID = new FileModel(
-          fileType == null ? File.UNKNOWN : File.valueOf(fileType),
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue(),
           fileName, filePath).getId();
       
       // Entity type
@@ -421,14 +430,16 @@ public class MySQLImporter {
           (Long)result.getObject(colPrefix + EntitiesTable.LENGTH.getName());
       
       EntityModel entity = new EntityModel(
-          entityType == null ? Entity.UNKNOWN : Entity.valueOf(entityType),
+          entityType == null ? Entity.UNKNOWN.getValue()
+              : Entity.valueOf(entityType).getValue(),
           result.getString(colPrefix + EntitiesTable.FQN.getName()), projectID,
           fileID, lModifiers == null ? null : lModifiers.intValue(),
           lMulti == null ? null : lMulti.intValue(),
           lOffset == null ? null : lOffset.intValue(),
           lLength == null ? null : lLength.intValue(),
           null, null,
-          fileType == null ? File.UNKNOWN : File.valueOf(fileType));
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue());
       
       return entity;
     }
@@ -451,7 +462,8 @@ public class MySQLImporter {
           Serialization.hexStringToByteArray(
               result.getString("project_hash"));
       byte[] projectID = new ProjectModel(
-          projectType == null ? Project.UNKNOWN : Project.valueOf(projectType),
+          projectType == null ? Project.UNKNOWN.getValue()
+              : Project.valueOf(projectType).getValue(),
           result.getString("project_name"), projectPath,
           projectHash).getId();
       
@@ -461,7 +473,8 @@ public class MySQLImporter {
           + result.getString("file_path");
       String fileName = result.getString("file_name");
       byte[] fileID = new FileModel(
-          fileType == null ? File.UNKNOWN : File.valueOf(fileType),
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue(),
           fileName, filePath).getId();
       
       Long lOffset =
@@ -471,12 +484,15 @@ public class MySQLImporter {
       
       RelationModel relation = new RelationModel(
           relationType == null
-              ? Relation.UNKNOWN : Relation.valueOf(relationType),
+              ? Relation.UNKNOWN.getValue()
+                  : Relation.valueOf(relationType).getValue(),
           relationClass == null
-              ? RelationClass.UNKNOWN : RelationClass.valueOf(relationClass),
+              ? RelationClass.UNKNOWN.getValue()
+                  : RelationClass.valueOf(relationClass).getValue(),
           sourceEntity.getId(), targetEntity.getId(), projectID, fileID,
           lOffset == null ? null : lOffset.intValue(),
-          lLength == null ? null : lLength.intValue());
+          lLength == null ? null : lLength.intValue(),
+          File.valueOf(fileType).getValue());
       
       return relation;
     }

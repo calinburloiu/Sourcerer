@@ -1,10 +1,8 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
-import edu.uci.ics.sourcerer.model.Entity;
-import edu.uci.ics.sourcerer.model.File;
 
 public class EntityModel extends ModelWithID {
-  protected Entity type;
+  protected Byte type;
   protected String fqn;
   protected byte[] projectID;
   protected byte[] fileID;
@@ -18,11 +16,11 @@ public class EntityModel extends ModelWithID {
   protected Integer nwloc;
   
   // Extra
-  protected File fileType;
+  protected Byte fileType;
   
-  public EntityModel(Entity type, String fqn, byte[] projectID,
+  public EntityModel(Byte type, String fqn, byte[] projectID,
       byte[] fileID, Integer modifier, Integer multi, Integer offset,
-      Integer length, Integer loc, Integer nwloc, File fileType) {
+      Integer length, Integer loc, Integer nwloc, Byte fileType) {
     super();
     this.type = type;
     this.fqn = fqn;
@@ -41,10 +39,10 @@ public class EntityModel extends ModelWithID {
         "multi", "offset", "length");
   }
   
-  public EntityModel(byte[] entityID, Entity type, String fqn,
+  public EntityModel(byte[] entityID, Byte type, String fqn,
       byte[] projectID, byte[] fileID, Integer modifiers, Integer multi,
       Integer offset, Integer length, Integer loc, Integer nwloc,
-      File fileType) {
+      Byte fileType) {
     super(entityID);
     this.type = type;
     this.fqn = fqn;
@@ -59,7 +57,7 @@ public class EntityModel extends ModelWithID {
     this.fileType = fileType;
   }
   
-  public EntityModel(String fqn, byte[] projectID, byte[] fileID, Entity type) {
+  public EntityModel(String fqn, byte[] projectID, byte[] fileID, Byte type) {
     super();
     this.fqn = fqn;
     this.projectID = projectID;
@@ -67,7 +65,7 @@ public class EntityModel extends ModelWithID {
     this.type = type;
   }
 
-  public Entity getType() {
+  public Byte getType() {
     return type;
   }
 
@@ -107,7 +105,7 @@ public class EntityModel extends ModelWithID {
     return nwloc;
   }
 
-  public File getFileType() {
+  public Byte getFileType() {
     return fileType;
   }
 

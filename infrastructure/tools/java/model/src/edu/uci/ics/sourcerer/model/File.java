@@ -17,10 +17,12 @@
  */
 package edu.uci.ics.sourcerer.model;
 
+import edu.nus.soc.sourcerer.util.EnumWithValue;
+
 /**
  * @author Joel Ossher (jossher@uci.edu)
  */
-public enum File {
+public enum File implements EnumWithValue<Byte> {
   UNKNOWN ((byte)0x00),
   SOURCE  ((byte)0x01),
   CLASS   ((byte)0x02),
@@ -32,7 +34,7 @@ public enum File {
     this.value = value;
   }
   
-  public byte getValue() {
+  public Byte getValue() {
     return value;
   }
 }

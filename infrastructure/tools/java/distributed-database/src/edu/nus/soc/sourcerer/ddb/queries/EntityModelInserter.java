@@ -59,19 +59,19 @@ public class EntityModelInserter implements ModelInserter<EntityModel> {
             entity.getFileID()));
         entityHashPut = new Put(entity.getId());
         filePut = new Put(Bytes.add(entity.getProjectID(), 
-            new byte[] {entity.getFileType().getValue()}, entity.getFileID()));
+            new byte[] {entity.getFileType()}, entity.getFileID()));
         
         // * `entities` TABLE
         // TODO Add modifiers, multi, offset and length to entities table.
         entityPut.add(EntitiesHBTable.CF_DEFAULT,
-            new byte[] {entity.getType().getValue()},
+            new byte[] {entity.getType()},
             new byte[] {});
         
         // * `entities_hash` TABLE
         if (entity.getType() != null) {
           entityHashPut.add(EntitiesHashHBTable.CF_DEFAULT,
               EntitiesHashHBTable.COL_ENTITYTYPE,
-              new byte[] {entity.getType().getValue()});
+              new byte[] {entity.getType()});
         }
         entityHashPut.add(EntitiesHashHBTable.CF_DEFAULT,
             EntitiesHashHBTable.COL_FQN,
@@ -117,7 +117,7 @@ public class EntityModelInserter implements ModelInserter<EntityModel> {
         
         // * `files` TABLE
         filePut.add(FilesHBTable.CF_ENTITIES, 
-            Bytes.add(new byte[] {entity.getType().getValue()}, 
+            Bytes.add(new byte[] {entity.getType()}, 
                 entity.getFqn().getBytes("UTF-8")),
             new byte[] {});
         

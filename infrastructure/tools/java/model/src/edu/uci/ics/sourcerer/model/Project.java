@@ -17,11 +17,13 @@
  */
 package edu.uci.ics.sourcerer.model;
 
+import edu.nus.soc.sourcerer.util.EnumWithValue;
+
 /**
  * @author Joel Ossher (jossher@uci.edu)
  * @author Calin-Andrei Burloiu
  */
-public enum Project {
+public enum Project implements EnumWithValue<Byte> {
   UNKNOWN       ((byte)0x00),
   SYSTEM        ((byte)0x01),
   JAVA_LIBRARY  ((byte)0x02),
@@ -35,7 +37,7 @@ public enum Project {
     this.value = value;
   }
   
-  public byte getValue() {
+  public Byte getValue() {
     return value;
   }
 }
