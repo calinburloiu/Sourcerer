@@ -14,14 +14,15 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
-import edu.nus.soc.sourcerer.ddb.tables.DirectRelationsHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.RelationsDirectHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.EntitiesHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.EntitiesHashHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.FilesHBTable;
-import edu.nus.soc.sourcerer.ddb.tables.InverseRelationsHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.RelationsHashHBTable;
+import edu.nus.soc.sourcerer.ddb.tables.RelationsInverseHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.ProjectsHBTable;
 
-import static edu.uci.ics.sourcerer.util.io.Logging.logger;
+import static edu.nus.soc.sourcerer.ddb.Commons.LOG;
 
 /**
  * This class is responsible with initialisation operations which prepare the
@@ -57,10 +58,11 @@ public class DatabaseInitializer {
     if (tableDescriptor == null) {
       tables.add(ProjectsHBTable.getTableDescriptor());
       tables.add(FilesHBTable.getTableDescriptor());
-      tables.add(EntitiesHBTable.getTableDescriptor());
       tables.add(EntitiesHashHBTable.getTableDescriptor());
-      tables.add(InverseRelationsHBTable.getTableDescriptor());
-      tables.add(DirectRelationsHBTable.getTableDescriptor());
+      tables.add(EntitiesHBTable.getTableDescriptor());
+      tables.add(RelationsHashHBTable.getTableDescriptor());
+      tables.add(RelationsInverseHBTable.getTableDescriptor());
+      tables.add(RelationsDirectHBTable.getTableDescriptor());
     }
     else {
       tables.add(tableDescriptor);
@@ -85,9 +87,9 @@ public class DatabaseInitializer {
     for (HTableDescriptor tableDesc : tables) {
       try {
         createTable(tableDesc);
-        logger.info("Table `" + tableDesc.getNameAsString() + "` created.");
+        LOG.info("Table `" + tableDesc.getNameAsString() + "` created.");
       } catch (TableExistsException e) {
-        logger.info("Table `" + tableDesc.getNameAsString() + "` already exists.");
+        LOG.info("Table `" + tableDesc.getNameAsString() + "` already exists.");
         
         if (emptyExisting) {
           emptyTable(tableDesc.getName());
@@ -98,14 +100,14 @@ public class DatabaseInitializer {
                 + tableDesc.getNameAsString()
                 + "`; this table shouldn't exist.");
           }
-          logger.info("Table `" + tableDesc.getNameAsString() + "` emptied.");
+          LOG.info("Table `" + tableDesc.getNameAsString() + "` emptied.");
         }
         
         if (updateExisting && !emptyExisting) {
           if (updateTable(tableDesc))
-            logger.info("Table `" + tableDesc.getNameAsString() + "` modified.");
+            LOG.info("Table `" + tableDesc.getNameAsString() + "` modified.");
           else
-            logger.info("Table `" + tableDesc.getNameAsString()
+            LOG.info("Table `" + tableDesc.getNameAsString()
                 + "` already exists and did not required modifications.");
         }
       }

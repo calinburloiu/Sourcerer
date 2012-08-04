@@ -32,7 +32,7 @@ public class ProjectsRetriever {
     }
   }
   
-  public ProjectModel getProjectFromResult(Result result) {
+  public static ProjectModel getProjectFromResult(Result result) {
     byte[] row = result.getRow();
     byte type = row[0];
     byte[] projectID = Bytes.tail(row, 16);

@@ -35,6 +35,13 @@ public class EntitiesHashHBTable extends HBTable {
   public static final byte[] COL_METRIC_LOC = Bytes.toBytes("loc");
   public static final byte[] COL_METRIC_NWLOC = Bytes.toBytes("nwloc");
   
+  public static final byte[] CF_RELATIONS = Bytes.toBytes("r");
+  public static final byte[] COL_RELATIONS_SOURCE_TYPE = Bytes.toBytes("set");
+  public static final byte[] COL_RELATIONS_SOURCE_RANK = Bytes.toBytes("rank");
+  public static final byte[] COL_RELATIONS_TARGETS_COUNT = Bytes.toBytes("tec");
+  public static final byte[] COL_RELATIONS_TARGETS = Bytes.toBytes("te");
+  public static final byte[] COL_RELATIONS = Bytes.toBytes("rids");
+  
   private EntitiesHashHBTable() {
     super();
   }
@@ -72,6 +79,14 @@ public class EntitiesHashHBTable extends HBTable {
     cfMetrics.setBlockCacheEnabled(false);
     cfMetrics.setBloomFilterType(StoreFile.BloomType.NONE);
     tableDesc.addFamily(cfMetrics);
+    
+    // Relations and CodeRank column family
+    HColumnDescriptor cfRelations = new HColumnDescriptor(CF_RELATIONS);
+    cfRelations.setMaxVersions(3);
+    cfRelations.setCompressionType(Compression.Algorithm.NONE);
+    cfRelations.setBlockCacheEnabled(false);
+    cfRelations.setBloomFilterType(StoreFile.BloomType.ROW);
+    tableDesc.addFamily(cfRelations);
     
     return tableDesc;
   }

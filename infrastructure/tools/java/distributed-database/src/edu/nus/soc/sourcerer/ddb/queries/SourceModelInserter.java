@@ -1,7 +1,5 @@
 package edu.nus.soc.sourcerer.ddb.queries;
 
-import static edu.uci.ics.sourcerer.util.io.Logging.logger;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

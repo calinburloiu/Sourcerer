@@ -2,6 +2,9 @@ package edu.nus.soc.sourcerer.ddb.tools;
 
 import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.*;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import static edu.uci.ics.sourcerer.db.util.DatabaseConnection.DATABASE_PASSWORD;
 import static edu.uci.ics.sourcerer.db.util.DatabaseConnection.DATABASE_URL;
 import static edu.uci.ics.sourcerer.db.util.DatabaseConnection.DATABASE_USER;
@@ -9,6 +12,7 @@ import edu.uci.ics.sourcerer.util.io.Command;
 import edu.uci.ics.sourcerer.util.io.PropertyManager;
 
 public class Main {
+  
   
   public static final Command INITIALIZE_DB =
       new Command("initialize-db", "Initialize, clean or update schema for the database.") {
@@ -57,6 +61,10 @@ public class Main {
    * @param args
    */
   public static void main(String[] args) {
+    // Setup logging.
+    Logger logger = Logger.getLogger("DDB");
+    logger.setLevel(Level.DEBUG);
+    
     PropertyManager.executeCommand(args, Main.class);
   }
 

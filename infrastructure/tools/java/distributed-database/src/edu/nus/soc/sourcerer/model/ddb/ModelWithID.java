@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import edu.nus.soc.sourcerer.util.Serialization;
 import edu.nus.soc.sourcerer.util.StringSerializationException;
 
 /**
@@ -97,10 +98,7 @@ public class ModelWithID implements Model {
       } 
     }
     
-    int length = bb.position();
-    byte[] inputBytes = new byte[length];
-    bb.position(0);
-    bb.get(inputBytes, 0, length);
+    byte[] inputBytes = Serialization.getFitByteBufferBytes(bb);
     
     MessageDigest md = null;
     try {

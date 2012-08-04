@@ -1,6 +1,7 @@
 package edu.nus.soc.sourcerer.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -99,6 +100,36 @@ public class Serialization {
       throw new StringSerializationException(
           "Your platform might not support UTF-8.", e);
     }
+  }
+  
+  /**
+   * Returns a new ByteBuffer with the same content and double capacity.
+   * 
+   * @param bb
+   * @return
+   */
+  public static ByteBuffer reallocateByteBuffer(ByteBuffer bb) {
+    int oldCapacity = bb.capacity();
+    ByteBuffer newBb = ByteBuffer.allocate(oldCapacity * 2);
+    newBb.put(bb);
+    
+    return newBb;
+  }
+  
+  /**
+   * Returns a new Byte buffer with the same content and the capacity equal
+   * to input current position.
+   * 
+   * @param bb
+   * @return
+   */
+  public static byte[] getFitByteBufferBytes(ByteBuffer bb) {
+    int length = bb.position();
+    byte[] outBytes = new byte[length];
+    bb.position(0);
+    bb.get(outBytes, 0, length);
+    
+    return outBytes;
   }
 
 //  public static void main(String args[]) {

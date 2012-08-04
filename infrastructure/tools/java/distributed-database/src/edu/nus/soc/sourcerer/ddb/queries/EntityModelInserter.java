@@ -11,17 +11,17 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
-import edu.nus.soc.sourcerer.ddb.tables.EntitiesHBTable;
+//import edu.nus.soc.sourcerer.ddb.tables.EntitiesHBTable;
 import edu.nus.soc.sourcerer.ddb.tables.EntitiesHashHBTable;
-import edu.nus.soc.sourcerer.ddb.tables.FilesHBTable;
+//import edu.nus.soc.sourcerer.ddb.tables.FilesHBTable;
 import edu.nus.soc.sourcerer.model.ddb.EntityModel;
 import edu.nus.soc.sourcerer.util.StringSerializationException;
 
 public class EntityModelInserter implements ModelInserter<EntityModel> {
   protected int selectRowsCount;
-  protected HTable entitiesTable;
+//  protected HTable entitiesTable;
   protected HTable entitiesHashTable;
-  protected HTable filesTable;
+//  protected HTable filesTable;
   
   public EntityModelInserter(int selectRowsCount)
       throws HBaseConnectionException {
@@ -30,42 +30,42 @@ public class EntityModelInserter implements ModelInserter<EntityModel> {
 
     // Get a table instance.
     try {
-      entitiesTable = EntitiesHBTable.getInstance().getHTable();
+//      entitiesTable = EntitiesHBTable.getInstance().getHTable();
       entitiesHashTable = EntitiesHashHBTable.getInstance().getHTable();
-      filesTable = FilesHBTable.getInstance().getHTable();
+//      filesTable = FilesHBTable.getInstance().getHTable();
     } catch (IOException e) {
       throw new HBaseConnectionException(
           "Could not connect to HBase.", e);
     }
-    entitiesTable.setAutoFlush(false);
+//    entitiesTable.setAutoFlush(false);
     entitiesHashTable.setAutoFlush(false);
-    filesTable.setAutoFlush(false);
+//    filesTable.setAutoFlush(false);
   }
   
   @Override
   public void insertModels(Collection<EntityModel> models) throws HBaseException {
-    ArrayList<Put> entityPuts = new ArrayList<Put>(selectRowsCount);
+//    ArrayList<Put> entityPuts = new ArrayList<Put>(selectRowsCount);
     ArrayList<Put> entityHashPuts = new ArrayList<Put>(selectRowsCount);
-    ArrayList<Put> filePuts = new ArrayList<Put>(selectRowsCount);
-    Put entityPut = null;
+//    ArrayList<Put> filePuts = new ArrayList<Put>(selectRowsCount);
+//    Put entityPut = null;
     Put entityHashPut = null;
-    Put filePut = null;
+//    Put filePut = null;
     
     // Add each entity to HBase.
     for (EntityModel entity : models) {
       try {
-        entityPut = new Put(Bytes.add(
-            (entity.getFqn() + '\0').getBytes("UTF-8"), entity.getProjectID(),
-            entity.getFileID()));
+//        entityPut = new Put(Bytes.add(
+//            (entity.getFqn() + '\0').getBytes("UTF-8"), entity.getProjectID(),
+//            entity.getFileID()));
         entityHashPut = new Put(entity.getId());
-        filePut = new Put(Bytes.add(entity.getProjectID(), 
-            new byte[] {entity.getFileType()}, entity.getFileID()));
+//        filePut = new Put(Bytes.add(entity.getProjectID(), 
+//            new byte[] {entity.getFileType()}, entity.getFileID()));
         
-        // * `entities` TABLE
-        // TODO Add modifiers, multi, offset and length to entities table.
-        entityPut.add(EntitiesHBTable.CF_DEFAULT,
-            new byte[] {entity.getType()},
-            new byte[] {});
+//        // * `entities` TABLE
+//        // TODO Add modifiers, multi, offset and length to entities table.
+//        entityPut.add(EntitiesHBTable.CF_DEFAULT,
+//            new byte[] {entity.getType()},
+//            new byte[] {});
         
         // * `entities_hash` TABLE
         if (entity.getType() != null) {
@@ -115,27 +115,29 @@ public class EntityModelInserter implements ModelInserter<EntityModel> {
               Bytes.toBytes(entity.getNwloc()));
         }
         
-        // * `files` TABLE
-        filePut.add(FilesHBTable.CF_ENTITIES, 
-            Bytes.add(new byte[] {entity.getType()}, 
-                entity.getFqn().getBytes("UTF-8")),
-            new byte[] {});
+//        // * `files` TABLE
+//        filePut.add(FilesHBTable.CF_ENTITIES, 
+//            Bytes.add(new byte[] {entity.getType()}, 
+//                entity.getFqn().getBytes("UTF-8")),
+//            new byte[] {});
         
-        entityPuts.add(entityPut);
+//        entityPuts.add(entityPut);
         entityHashPuts.add(entityHashPut);
-        filePuts.add(filePut);
+//        filePuts.add(filePut);
       } catch (UnsupportedEncodingException e) {
         throw new StringSerializationException(e);
       }
     }
     
     try {
-      entitiesTable.put(entityPuts);
-      entitiesTable.flushCommits();
+//      entitiesTable.put(entityPuts);
+//      entitiesTable.flushCommits();
+      
       entitiesHashTable.put(entityHashPuts);
       entitiesHashTable.flushCommits();
-      filesTable.put(filePuts);
-      filesTable.flushCommits();
+      
+//      filesTable.put(filePuts);
+//      filesTable.flushCommits();
     } catch (IOException e) {
       throw new HBaseException(e);
     }

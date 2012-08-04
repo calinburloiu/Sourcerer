@@ -2,6 +2,8 @@ package edu.nus.soc.sourcerer.util;
 
 public class StringSerializationException extends RuntimeException {
 
+  private static final long serialVersionUID = -4675975582399542920L;
+
   public StringSerializationException() {
   }
 

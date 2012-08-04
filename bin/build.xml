@@ -74,6 +74,14 @@
     </classpath>
   </manifestclasspath>
 	
+  <manifestclasspath property="sourcerer-mapreduce.jar_classpath"
+  	  jarfile="${dist}/sourcerer-mapreduce.jar">
+    <classpath>
+      <fileset refid="lib.classpath" />
+      <pathelement path="${dist}/conf" />
+    </classpath>
+  </manifestclasspath>
+	
 	<manifestclasspath property="testing.jar_classpath"
 	  	  jarfile="${dist}/testing.jar">
 	    <classpath>
@@ -110,6 +118,7 @@
           <include name="**/zookeeper-3.4.3.jar" />
           <include name="**/slf4j-api-1.5.8.jar" />
           <include name="**/log4j-1.2.8.jar" />
+          <include name="**/commons-cli-1.1.jar" />
           <include name="**/commons-logging-1.1.1.jar" />
           <include name="**/commons-io-1.4.jar" />
           <include name="**/slf4j-jcl-1.5.8.jar" />
@@ -118,6 +127,7 @@
           <include name="**/commons-configuration-1.6.jar" />
           <include name="**/hadoop-core-1.0.1.jar" />
           <include name="**/junit-4.3.jar" />
+          <include name="**/jackson-mapper-asl-1.0.0.jar" />
         </fileset>
       </classpath>
       <src path="${utilities}" />
@@ -199,6 +209,18 @@
     <!-- File 'META-INF/INDEX.LIST' from the JAR prevents classpath manifest to be read.-->
     <exec executable="zip">
       <arg line="-d ${dist}/sourcerer-ddb.jar META-INF/INDEX.LIST" />
+    </exec>
+  </target>
+	
+  <target name="sourcerer-mapreduce" depends="compile-java-tools-core">
+    <jar destfile="${dist}/sourcerer-mapreduce.jar" basedir="${build-java-tools-core}">
+      <manifest>
+        <attribute name="Class-Path" value="${sourcerer-mapreduce.jar_classpath}" />
+      </manifest>
+    </jar>
+    <!-- File 'META-INF/INDEX.LIST' from the JAR prevents classpath manifest to be read.-->
+    <exec executable="zip">
+      <arg line="-d ${dist}/sourcerer-mapreduce.jar META-INF/INDEX.LIST" />
     </exec>
   </target>
   

@@ -1,8 +1,7 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
-public class RelationModel implements Model {
-  protected Byte type;
-  protected Byte relationClass;
+public class RelationModel extends ModelWithID {
+  protected Byte kind;
   protected byte[] sourceID;
   protected byte[] targetID;
   protected byte[] projectID;
@@ -11,41 +10,48 @@ public class RelationModel implements Model {
   protected Integer length;
   
   // Extra
+  protected Byte sourceType;
+  protected Byte targetType;
   protected Byte fileType;
   
-  public RelationModel(Byte type, Byte relationClass, byte[] sourceID, byte[] targetID, byte[] projectID, byte[] fileID, Integer offset, Integer length) {
+  public RelationModel(Byte kind, byte[] sourceID, byte[] targetID,
+      byte[] projectID, byte[] fileID, Integer offset, Integer length) {
     super();
-    this.type = type;
-    this.relationClass = relationClass;
+    this.kind = kind;
     this.sourceID = sourceID;
     this.targetID = targetID;
     this.projectID = projectID;
     this.fileID = fileID;
     this.offset = offset;
     this.length = length;
+    
+    // Compute ID.
+    id = computeId(73, "kind", "sourceID", "targetID", "projectID", "fileID",
+        "offset", "length");
   }
   
-  public RelationModel(Byte type, Byte relationClass, byte[] sourceID,
+  public RelationModel(Byte kind, byte[] sourceID,
       byte[] targetID, byte[] projectID, byte[] fileID,
       Integer offset, Integer length, Byte fileType) {
-    super();
-    this.type = type;
-    this.relationClass = relationClass;
-    this.sourceID = sourceID;
-    this.targetID = targetID;
-    this.projectID = projectID;
-    this.fileID = fileID;
-    this.offset = offset;
-    this.length = length;
+    this(kind, sourceID, targetID, projectID, fileID, offset, length);
     this.fileType = fileType;
+  }
+  
+  public RelationModel(Byte kind, byte[] sourceID,
+      byte[] targetID, byte[] projectID, byte[] fileID,
+      Integer offset, Integer length, Byte sourceType, Byte targetType,
+      Byte fileType) {
+    this(kind, sourceID, targetID, projectID, fileID, offset, length, fileType);
+    this.sourceType = sourceType;
+    this.targetType = targetType;
   }
 
   public Byte getType() {
-    return type;
+    return (byte) (kind & 0x1f);
   }
 
   public Byte getRelationClass() {
-    return relationClass;
+    return (byte) (kind & 0xe0);
   }
   
   /**
@@ -55,8 +61,8 @@ public class RelationModel implements Model {
    * 
    * @return
    */
-  public byte getRelationKind() {
-    return (byte)(type | relationClass);
+  public byte getKind() {
+    return kind;
   }
 
   public byte[] getSourceID() {
@@ -81,6 +87,14 @@ public class RelationModel implements Model {
 
   public Integer getLength() {
     return length;
+  }
+
+  public Byte getSourceType() {
+    return sourceType;
+  }
+
+  public Byte getTargetType() {
+    return targetType;
   }
 
   public Byte getFileType() {

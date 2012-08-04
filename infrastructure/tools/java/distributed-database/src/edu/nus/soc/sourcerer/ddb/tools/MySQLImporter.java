@@ -33,8 +33,7 @@ import edu.uci.ics.sourcerer.model.Project;
 import edu.uci.ics.sourcerer.model.Relation;
 import edu.uci.ics.sourcerer.model.RelationClass;
 
-import static edu.uci.ics.sourcerer.util.io.Logging.logger;
-
+import static edu.nus.soc.sourcerer.ddb.Commons.LOG;
 
 /**
  * This class imports data from SourcererDB MySQL database to SourcererDDC
@@ -48,6 +47,7 @@ import static edu.uci.ics.sourcerer.util.io.Logging.logger;
  *
  */
 public class MySQLImporter {
+  
   protected DatabaseConfiguration databaseConfiguration = null;
   protected final int SELECT_ROWS_COUNT; 
   
@@ -68,16 +68,17 @@ public class MySQLImporter {
     executor = new QueryExecutor(connection.getConnection());
     
     tasks = new Vector<Task<? extends Model>>(4);
-    tasks.add(new ProjectsImporter());
-    tasks.add(new FilesImporter());
-    tasks.add(new EntitiesImporter());
+//    tasks.add(new ProjectsImporter());
+//    tasks.add(new FilesImporter());
+//    tasks.add(new EntitiesImporter());
     tasks.add(new RelationsImporter());
   }
 
   public void start() throws SQLException, HBaseException {
     for (Task<? extends Model> task : tasks) {
-      logger.info(task.getTaskMessage());
+      LOG.info("Importing " + task.getTaskMessage() + "...");
       task.execute();
+      LOG.info("Importing " + task.getTaskMessage() + " completed.");
     }
   }
 
@@ -95,7 +96,7 @@ public class MySQLImporter {
       Collection<E> models = null;
       E model = null;
       ModelInserter<E> modelInserter = getHBaseModelInserter();
-      int startID = 0;
+      int startID = 0, count = 0;
       
       // for each select
       while (true) {
@@ -111,17 +112,21 @@ public class MySQLImporter {
           model = getHBaseModel(results);
           models.add(model);
           startID = getSQLId(results);
+          count++;
         } while (results.next());
         
         modelInserter.insertModels(models);
+        LOG.debug("Inserted " + count + " models.");
       }
+      
+      LOG.debug("Finished inserting " + count + " models.");
     }
   }
   
   protected class ProjectsImporter extends Task<ProjectModel> {
     @Override
     protected String getTaskMessage() {
-      return "Importing projects data in HBase `projects` table...";
+      return "projects";
     }
 
     @Override
@@ -135,6 +140,7 @@ public class MySQLImporter {
             + "  ON p.project_id = m2.project_id "
             + "    AND m2.metric_type = 'NON_WHITESPACE_LINES_OF_CODE' "
             + "WHERE p.project_id > " + startID + " "
+            + "ORDER BY p.project_id "
             + "LIMIT " + SELECT_ROWS_COUNT + ";";
     }
     
@@ -176,7 +182,7 @@ public class MySQLImporter {
   protected class FilesImporter extends Task<FileModel> {
     @Override
     protected String getTaskMessage() {
-      return "Importing files data in HBase tables...";
+      return "files";
     }
 
     @Override
@@ -194,6 +200,7 @@ public class MySQLImporter {
           + "  ON f.file_id = m2.file_id "
           + "    AND m2.metric_type = 'NON_WHITESPACE_LINES_OF_CODE' "
           + "WHERE f.file_id > " + startID + " "
+          + "ORDER BY f.file_id "
           + "LIMIT " + SELECT_ROWS_COUNT + ";";
     }
 
@@ -249,7 +256,7 @@ public class MySQLImporter {
 
     @Override
     protected String getTaskMessage() {
-      return "Importing entities data in HBase tables...";
+      return "entities";
     }
 
     @Override
@@ -270,6 +277,7 @@ public class MySQLImporter {
           + "    ON e.entity_id = m2.entity_id "
           + "      AND m2.metric_type = 'NON_WHITESPACE_LINES_OF_CODE' "
           + "WHERE e.entity_id > " + startID + " "
+          + "ORDER BY e.entity_id "
           + "LIMIT " + SELECT_ROWS_COUNT + ";";
     }
 
@@ -345,7 +353,7 @@ public class MySQLImporter {
 
     @Override
     protected String getTaskMessage() {
-      return "Importing relations data in HBase tables...";
+      return "relations";
     }
 
     @Override
@@ -388,6 +396,7 @@ public class MySQLImporter {
           + "  LEFT JOIN files f2 "
           + "    ON e2.file_id = f2.file_id "
           + "WHERE r.relation_id > " + startID + " "
+          + "ORDER BY r.relation_id "
           + "LIMIT " + SELECT_ROWS_COUNT + ";";
     }
     
@@ -482,17 +491,20 @@ public class MySQLImporter {
       Long lLength =
           (Long)result.getObject(EntitiesTable.LENGTH.getName());
       
-      RelationModel relation = new RelationModel(
-          relationType == null
-              ? Relation.UNKNOWN.getValue()
-                  : Relation.valueOf(relationType).getValue(),
-          relationClass == null
+      Byte relationKind = (byte) ((relationType == null
+          ? Relation.UNKNOWN.getValue()
+              : Relation.valueOf(relationType).getValue())
+          | (relationClass == null
               ? RelationClass.UNKNOWN.getValue()
-                  : RelationClass.valueOf(relationClass).getValue(),
+                  : RelationClass.valueOf(relationClass).getValue()));
+      
+      RelationModel relation = new RelationModel(relationKind,
           sourceEntity.getId(), targetEntity.getId(), projectID, fileID,
           lOffset == null ? null : lOffset.intValue(),
           lLength == null ? null : lLength.intValue(),
-          File.valueOf(fileType).getValue());
+          sourceEntity.getType(), targetEntity.getType(),
+          fileType == null ? File.UNKNOWN.getValue()
+              : File.valueOf(fileType).getValue());
       
       return relation;
     }

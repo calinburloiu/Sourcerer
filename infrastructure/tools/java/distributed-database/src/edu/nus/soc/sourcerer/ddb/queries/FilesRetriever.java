@@ -33,7 +33,7 @@ public class FilesRetriever {
     }
   }
   
-  public FileModel getFileFromResult(Result result) {
+  public static FileModel getFileFromResult(Result result) {
     byte[] row = result.getRow();
     byte[] projectID = Bytes.head(row, 16);
     byte fileType = row[16];

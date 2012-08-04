@@ -20,9 +20,10 @@ import edu.uci.ics.sourcerer.util.io.properties.BooleanProperty;
 import edu.uci.ics.sourcerer.util.io.properties.IntegerProperty;
 import edu.uci.ics.sourcerer.util.io.properties.StringProperty;
 
-import static edu.uci.ics.sourcerer.util.io.Logging.logger;
+import static edu.nus.soc.sourcerer.ddb.Commons.LOG;
 
 public class DDBTools {
+  
   // initialize-database properties:
   public static final Property<Boolean> EMPTY_EXISTING = new BooleanProperty(
       "empty-existing",
@@ -79,9 +80,9 @@ public class DDBTools {
       DatabaseInitializer dbInit = new DatabaseInitializer();
       dbInit.start(EMPTY_EXISTING.getValue(), UPDATE_EXISTING.getValue());
     } catch (HBaseConnectionException e) {
-      logger.severe("Could not connect to HBase database: " + e.getMessage());
+      LOG.fatal("Could not connect to HBase database: " + e.getMessage());
     } catch (HBaseException e) {
-      logger.severe("An HBase error occured: " + e.getMessage());
+      LOG.fatal("An HBase error occured: " + e.getMessage());
     }
   }
   
@@ -94,21 +95,21 @@ public class DDBTools {
     try {
       importer.start();
     } catch (SQLException e) {
-      logger.severe("A MySQL error occured: " + e.getMessage());
+      LOG.fatal("A MySQL error occured: " + e.getMessage());
     } catch (HBaseConnectionException e) {
-      logger.severe("Could not connect to HBase database: " + e.getMessage());
+      LOG.fatal("Could not connect to HBase database: " + e.getMessage());
     } catch (HBaseException e) {
-      logger.severe("An HBase error occured: " + e.getMessage());
+      LOG.fatal("An HBase error occured: " + e.getMessage());
     }
   }
   
   public static void hexToHBaseStr() {
-    logger.info(Bytes.toStringBinary(
+    System.out.println(Bytes.toStringBinary(
         Serialization.hexStringToByteArray(HEX_STR.getValue())));
   }
   
 //  public static void hBaseStrToHex() {
-//    logger.info(Serialization.byteArrayToHexString(
+//    LOG.info(Serialization.byteArrayToHexString(
 //        Bytes.toBytesBinary(HBASE_STR.getValue())));
 //  }
 
@@ -131,11 +132,11 @@ public class DDBTools {
       for (ProjectModel project : appender.getList())
         System.out.println("* " + project);
     } catch (HBaseConnectionException e) {
-      logger.severe("Could not connect to HBase database: " + e.getMessage());
+      LOG.fatal("Could not connect to HBase database: " + e.getMessage());
     } catch (HBaseException e) {
-      logger.severe("An HBase error occured: " + e.getMessage());
+      LOG.fatal("An HBase error occured: " + e.getMessage());
     } catch (IllegalArgumentException e) {
-      logger.severe("Illegal arguments: " + e.getMessage());
+      LOG.fatal("Illegal arguments: " + e.getMessage());
     }
   }
   
@@ -164,11 +165,11 @@ public class DDBTools {
       for (FileModel file : appender.getList())
         System.out.println("* " + file);
     } catch (HBaseConnectionException e) {
-      logger.severe("Could not connect to HBase database: " + e.getMessage());
+      LOG.fatal("Could not connect to HBase database: " + e.getMessage());
     } catch (HBaseException e) {
-      logger.severe("An HBase error occured: " + e.getMessage());
+      LOG.fatal("An HBase error occured: " + e.getMessage());
     } catch (IllegalArgumentException e) {
-      logger.severe("Illegal arguments: " + e.getMessage());
+      LOG.fatal("Illegal arguments: " + e.getMessage());
     }
   }
 }

@@ -18,6 +18,8 @@
 	<classpathentry kind="lib" path="/lib/slf4j-jcl-1.5.8.jar"/>
 	<classpathentry kind="lib" path="/lib/zookeeper-3.4.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/database"/>
-	<classpathentry kind="lib" path="/lib/hadoop-core-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/lib/hadoop-core-1.0.1.jar" sourcepath="/home/calin/opt/hadoop/hadoop-src.jar"/>
+	<classpathentry kind="lib" path="/lib/commons-cli-1.1.jar"/>
+	<classpathentry kind="lib" path="/lib/jackson-mapper-asl-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
