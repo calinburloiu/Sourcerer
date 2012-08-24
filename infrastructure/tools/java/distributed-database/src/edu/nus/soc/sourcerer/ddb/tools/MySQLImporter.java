@@ -70,8 +70,8 @@ public class MySQLImporter {
     tasks = new Vector<Task<? extends Model>>(4);
 //    tasks.add(new ProjectsImporter());
 //    tasks.add(new FilesImporter());
-//    tasks.add(new EntitiesImporter());
-    tasks.add(new RelationsImporter());
+    tasks.add(new EntitiesImporter());
+//    tasks.add(new RelationsImporter());
   }
 
   public void start() throws SQLException, HBaseException {
@@ -116,10 +116,12 @@ public class MySQLImporter {
         } while (results.next());
         
         modelInserter.insertModels(models);
-        LOG.debug("Inserted " + count + " models.");
+        LOG.debug("Inserted " + count + " models to " + getTaskMessage()
+            + " tables.");
       }
       
-      LOG.debug("Finished inserting " + count + " models.");
+      LOG.debug("Finished inserting " + count + " models to " + getTaskMessage()
+            + " tables.");
     }
   }
   

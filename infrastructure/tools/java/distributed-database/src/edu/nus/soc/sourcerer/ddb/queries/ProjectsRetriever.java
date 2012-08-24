@@ -1,11 +1,14 @@
 package edu.nus.soc.sourcerer.ddb.queries;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -13,7 +16,9 @@ import edu.nus.soc.sourcerer.ddb.HBaseConnectionException;
 import edu.nus.soc.sourcerer.ddb.HBaseException;
 import edu.nus.soc.sourcerer.ddb.tables.ProjectsHBTable;
 import edu.nus.soc.sourcerer.ddb.util.ModelAppender;
+import edu.nus.soc.sourcerer.model.ddb.Model;
 import edu.nus.soc.sourcerer.model.ddb.ProjectModel;
+import edu.nus.soc.sourcerer.util.EnumUtil;
 import edu.uci.ics.sourcerer.model.Project;
 
 public class ProjectsRetriever {
@@ -32,8 +37,14 @@ public class ProjectsRetriever {
     }
   }
   
-  public static ProjectModel getProjectFromResult(Result result) {
+  public static ProjectModel resultToProjectModel(Result result) {
+    if (result == null)
+      return null;
+    
     byte[] row = result.getRow();
+    if (row == null)
+      return null;
+    
     byte type = row[0];
     byte[] projectID = Bytes.tail(row, 16);
     
@@ -70,18 +81,27 @@ public class ProjectsRetriever {
         );
   }
   
-  public void retrieveProjects(ModelAppender<ProjectModel> appender, Byte type)
+  public void retrieveProjects(ModelAppender<Model> appender, Byte type)
       throws HBaseException {
-    Scan scan = new Scan(new byte[] {type},
-        new byte[] {(byte)(type + 1)});
+    Scan scan = null;
     ResultScanner scanner = null;
     ProjectModel project = null;
+    
+    // If type is null scan all projects.
+    if (type == null) 
+      scan = new Scan();
+    else
+      scan = new Scan(new byte[] {type},
+          new byte[] {(byte)(type + 1)});
+    
+    scan.addFamily(ProjectsHBTable.CF_DEFAULT);
+    scan.addFamily(ProjectsHBTable.CF_METRICS);
     
     try {
       scanner = table.getScanner(scan);
       
       for (Result result : scanner) {
-        project = getProjectFromResult(result);
+        project = resultToProjectModel(result);
         appender.add(project);
       }      
     } catch (IOException e) {
@@ -92,29 +112,51 @@ public class ProjectsRetriever {
     }
   }
   
-  public void retrieveProjects(ModelAppender<ProjectModel> appender,
+  public void retrieveProjects(ModelAppender<Model> appender,
       Byte type, byte[] projectID) 
       throws HBaseException {
     ProjectModel project = null;
-    Result result;
     
+    // Scan all projects of a type.
     if (projectID == null) {
       retrieveProjects(appender, type);
       return;
     }
     
-    Get get = new Get(Bytes.add(new byte[] {type}, projectID));
-    get.addFamily(ProjectsHBTable.CF_DEFAULT);
-    get.addFamily(ProjectsHBTable.CF_METRICS);
-    
-    try {
-      result = table.get(get);
-    } catch (IOException e) {
-      throw new HBaseException(e.getMessage(), e);
+    // If type is null search project of all types with that ID.
+    Project[] types = null;
+    if (type != null) {
+      types = new Project[] { 
+          (Project) EnumUtil.getEnumByValue(Project.values(), new Byte(type)) };
+    }
+    else {
+      types = Project.values();
     }
     
-    project = getProjectFromResult(result);
-    appender.add(project);
+    List<Row> batch = new ArrayList<Row>(types.length);
+    Object[] results = new Object[types.length];
+    
+    for (Project crtType : types) {
+      Get get = new Get(Bytes.add(new byte[] {crtType.getValue()}, projectID));
+      get.addFamily(ProjectsHBTable.CF_DEFAULT);
+      get.addFamily(ProjectsHBTable.CF_METRICS);
+      batch.add(get);
+    }
+    
+    try {
+      table.batch(batch, results);
+    } catch (IOException e) {
+      throw new HBaseException(e.getMessage(), e);
+    } catch (InterruptedException e) {}
+    
+    // Only one project can be found (ID is unique).
+    for (Object result : results) {
+      if (result != null && !((Result) result).isEmpty()) {
+        project = resultToProjectModel((Result) result);
+        appender.add(project);
+        break;
+      }
+    }
   }
 
 }

@@ -14,6 +14,10 @@ public abstract class HBTable {
   
   public abstract String getName();
   
+  public void setupHTable() {
+    
+  }
+  
   public HTable getHTable()
       throws IOException {
     if (getName() == null)
@@ -24,6 +28,7 @@ public abstract class HBTable {
     if (hTable == null) {
       Configuration conf = HBaseConfiguration.create();
       hTable = new HTable(conf, dbConf.getTablePrefix() + getName());
+      setupHTable();
     }
     
     return hTable;

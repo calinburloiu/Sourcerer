@@ -84,6 +84,11 @@ public class EntityModelInserter implements ModelInserter<EntityModel> {
               EntitiesHashHBTable.COL_FID,
               entity.getFileID());
         }
+        if (entity.getFileType() != null) {
+          entityHashPut.add(EntitiesHashHBTable.CF_DEFAULT,
+              EntitiesHashHBTable.COL_FILETYPE,
+              new byte[] {entity.getFileType()});
+        }
         if (entity.getModifiers() != null) {
           entityHashPut.add(EntitiesHashHBTable.CF_DEFAULT,
               EntitiesHashHBTable.COL_MODIFIERS,

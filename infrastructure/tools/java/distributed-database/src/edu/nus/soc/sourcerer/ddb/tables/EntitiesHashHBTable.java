@@ -28,6 +28,7 @@ public class EntitiesHashHBTable extends HBTable {
   public static final byte[] COL_MULTI = Bytes.toBytes("mult");
   public static final byte[] COL_PID = Bytes.toBytes("pid");
   public static final byte[] COL_FID = Bytes.toBytes("fid");
+  public static final byte[] COL_FILETYPE = Bytes.toBytes("ft");
   public static final byte[] COL_OFFSET = Bytes.toBytes("offs");
   public static final byte[] COL_LENGTH = Bytes.toBytes("len");
   
@@ -41,6 +42,13 @@ public class EntitiesHashHBTable extends HBTable {
   public static final byte[] COL_RELATIONS_TARGETS_COUNT = Bytes.toBytes("tec");
   public static final byte[] COL_RELATIONS_TARGETS = Bytes.toBytes("te");
   public static final byte[] COL_RELATIONS = Bytes.toBytes("rids");
+  
+  public static final byte[] DANGLING_CACHE_START_ROW = new byte[] {
+    (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+    (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+    (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+    (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF
+  };
   
   private EntitiesHashHBTable() {
     super();
@@ -56,6 +64,13 @@ public class EntitiesHashHBTable extends HBTable {
   @Override
   public String getName() {
     return NAME;
+  }
+  
+  @Override
+  public void setupHTable() {
+    super.setupHTable();
+    
+    hTable.setScannerCaching(128);
   }
 
   public static HTableDescriptor getTableDescriptor() {

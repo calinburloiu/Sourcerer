@@ -1,5 +1,7 @@
 package edu.nus.soc.sourcerer.model.ddb;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.nus.soc.sourcerer.util.EnumUtil;
 import edu.nus.soc.sourcerer.util.Serialization;
 import edu.uci.ics.sourcerer.model.Project;
@@ -120,14 +122,18 @@ public class ProjectModel extends ModelWithID {
 
   @Override
   public String toString() {
-    return "project(name=\"" + name + "\", ID=\""
-        + Serialization.byteArrayToHexString(id) + "\", "
-        + "type=" + EnumUtil.getEnumByValue(Project.values(), type) + "(0x"
-        + Serialization.byteArrayToHexString(new byte[] {type})
-        + "), description=\"" + description + "\", version=\"" + version
-        + "\", group=\"" + group + "\", path=\"" + path + "\", hash=\""
-        + Serialization.byteArrayToHexString(hash) + "\", hasSource="
-        + hasSource + ", loc=" + loc + ", nwloc=" + nwloc + ")";
+    return Serialization.byteArrayToHexString(id)
+        + "\n  " + StringUtils.rightPad("name: ", 16) + name
+        + "\n  " + StringUtils.rightPad("type: ", 16) + EnumUtil.getEnumByValue(Project.values(), type) + "(0x"
+            + Serialization.byteArrayToHexString(new byte[] {type}) + ")"
+        + (description != null ? "\n  " + StringUtils.rightPad("description: ", 16) + description : "")
+        + (version != null ? "\n  " + StringUtils.rightPad("version: ", 16) + version : "")
+        + (group != null ? "\n  " + StringUtils.rightPad("group: ", 16) + group : "")
+        + (path != null ? "\n  " + StringUtils.rightPad("path: ", 16) + path : "")
+        + (hash != null ? "\n  " + StringUtils.rightPad("hash: ", 16) + Serialization.byteArrayToHexString(hash) : "")
+        + "\n  " + StringUtils.rightPad("hasSource: ", 16) + hasSource
+        + (loc != null ? "\n  " + StringUtils.rightPad("loc: ", 16) + loc : "")
+        + (nwloc != null ? "\n  " + StringUtils.rightPad("nwloc: ", 16) + nwloc : "");
   }
   
 //  public static void main(String args[]) {

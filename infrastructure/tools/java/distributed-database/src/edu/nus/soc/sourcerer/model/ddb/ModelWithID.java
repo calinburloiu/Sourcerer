@@ -113,6 +113,10 @@ public class ModelWithID implements Model {
   public byte[] getId() {
     return id;
   }
+
+  public void setId(byte[] id) {
+    this.id = id;
+  }
   
 //  public static void main(String[] args) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 //    ModelWithID m = new ModelWithID(new byte[] {'C', 'a', 'B'});

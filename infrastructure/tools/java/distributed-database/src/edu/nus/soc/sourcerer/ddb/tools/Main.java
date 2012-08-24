@@ -2,6 +2,8 @@ package edu.nus.soc.sourcerer.ddb.tools;
 
 import static edu.nus.soc.sourcerer.ddb.tools.DDBTools.*;
 
+//import java.math.BigDecimal;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -29,38 +31,73 @@ public class Main {
       }.setProperties(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD,
           HBASE_TABLE_PREFIX);
 
-  public static final Command HEX_TO_HBASESTR =
-      new Command("hex-to-hbasestr", "Convert a hex string to an HBase IRB string.") {
+  public static final Command HEX_TO_ESCSTR =
+      new Command("hex-to-escstr", "Convert a hex string to a binary escaped string.") {
         protected void action() {
-          DDBTools.hexToHBaseStr();
+          DDBTools.hexToEscStr();
         }
       }.setProperties(HEX_STR);
       
-//  public static final Command HBASESTR_TO_HEX =
-//      new Command("hbasestr-to-hex", "Convert an HBase IRB string to a hex string.") {
-//        protected void action() {
-//          DDBTools.hBaseStrToHex();
-//        }
-//      }.setProperties(HBASE_STR);
+  public static final Command ESCSTR_TO_HEX =
+      new Command("escstr-to-hex", "Convert a binary escaped string to a hex string.") {
+        protected void action() {
+          DDBTools.escStrToHex();
+        }
+      }.setProperties(ESC_STR);
   
   public static final Command RETRIEVE_PROJECTS =
-      new Command("retrieve-projects", "Search projects by: project-type [project-id].") {
+      new Command("retrieve-projects", "Search projects by: pt [pid].") {
         protected void action() {
           DDBTools.retrieveProjects();
         }
       }.setProperties(PROJECT_TYPE, PROJECT_ID, HBASE_TABLE_PREFIX);
   
   public static final Command RETRIEVE_FILES =
-      new Command("retrieve-files", "Search files by: project-id [file-type [file-id]].") {
+      new Command("retrieve-files", "Search files by: pid [ft [fid]].") {
         protected void action() {
           DDBTools.retrieveFiles();
         }
       }.setProperties(PROJECT_ID, FILE_TYPE, FILE_ID, HBASE_TABLE_PREFIX);
+
+  // TODO Other search criteria
+  public static final Command RETRIEVE_ENTITIES =
+      new Command("retrieve-entities", "Search entities by: eid TODO") {
+        protected void action() {
+          DDBTools.retrieveEntities();
+        }
+      }.setProperties(ENTITY_ID, FQN, FQN_PREFIX, PROJECT_ID, FILE_ID,
+          FILE_TYPE, ENTITY_TYPE, HBASE_TABLE_PREFIX);
       
+  public static final Command RETRIEVE_CODE_RANK =
+      new Command("retrieve-code-rank", "Retrieve the code rank of an entity by its ID") {
+        protected void action() {
+          DDBTools.retrieveCodeRank();
+        }
+      }.setProperties(ENTITY_ID, HBASE_TABLE_PREFIX);
+
+  public static final Command RETRIEVE_RELATIONS_BY_SOURCE =
+      new Command("retrieve-relations-by-source", "Retrieve all relations with a particular source entity ID.") {
+        protected void action() {
+          DDBTools.retrieveSourcedRelations();
+        }
+      }.setProperties(ENTITY_ID, HBASE_TABLE_PREFIX);
+      
+  public static final Command RETRIEVE_RELATIONS =
+      new Command("retrieve-relations", "Search relations by: rid TODO") {
+        protected void action() {
+          DDBTools.retrieveRelations();
+        }
+      }.setProperties(RELATION_ID, SOURCE_ID, TARGET_ID, RELATION_KIND,
+          PROJECT_ID, FILE_ID, FILE_TYPE, HBASE_TABLE_PREFIX);
+  
   /**
    * @param args
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
+
+//    Test.test();
+//    System.exit(0);
+    
     // Setup logging.
     Logger logger = Logger.getLogger("DDB");
     logger.setLevel(Level.DEBUG);

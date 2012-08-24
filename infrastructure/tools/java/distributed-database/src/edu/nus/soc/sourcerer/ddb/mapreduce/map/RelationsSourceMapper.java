@@ -27,7 +27,7 @@ import static edu.nus.soc.sourcerer.ddb.Commons.LOG;
 public class RelationsSourceMapper
     extends TableMapper<RelationSourceWritable, RelationTargetsWritable> {
 
-  public enum Counters { ROWS, ERRORS, VALID };
+  public enum Counters { ROWS, ERRORS };
   
   @Override
   protected void map(ImmutableBytesWritable row, Result columns, Context context)
@@ -61,7 +61,6 @@ public class RelationsSourceMapper
     try {
       // Write output.
       context.write(outKey, outVal);
-      context.getCounter(Counters.VALID).increment(1);
     } catch (IOException e) {
       LOG.error("Mapper could not write row " + Bytes.toStringBinary(row.get()));
       context.getCounter(Counters.ERRORS).increment(1);

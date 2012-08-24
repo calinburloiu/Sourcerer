@@ -41,6 +41,13 @@ public class RelationsDirectHBTable extends HBTable {
     return NAME;
   }
   
+  @Override
+  public void setupHTable() {
+    super.setupHTable();
+    
+    hTable.setScannerCaching(128);
+  }
+  
   /**
    * Compute row key.
    * 

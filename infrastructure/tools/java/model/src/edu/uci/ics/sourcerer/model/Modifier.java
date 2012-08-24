@@ -72,6 +72,16 @@ public enum Modifier implements EnumWithValue<Integer> {
     return Integer.toString(convertToInt(modifiers));
   }
   
+  public static String convertToHumanString(Set<Modifier> modifiers) {
+    String str = "";
+    
+    for (Modifier modifier : modifiers) {
+      str += modifier.toString() + " ";
+    }
+    
+    return str;
+  }
+  
   public static Set<Modifier> convertFromInt(int modifiers) {
     Set<Modifier> mods = Helper.newHashSet();
     for (Modifier mod : values()) {

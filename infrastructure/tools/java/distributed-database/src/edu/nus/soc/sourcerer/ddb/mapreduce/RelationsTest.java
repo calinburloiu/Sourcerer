@@ -118,7 +118,7 @@ public class RelationsTest {
     
     // Arguments
     if (cmd.hasOption("d"))
-      conf.set("conf.debug", "true");
+      conf.set(ConfigurationParams.DEBUG, "true");
     if (cmd.hasOption("p"));
       tablePrefix = cmd.getOptionValue("p");
     String output = cmd.getOptionValue("o");

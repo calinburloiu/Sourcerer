@@ -49,6 +49,13 @@ public class RelationsHashHBTable extends HBTable {
     return NAME;
   }
   
+  @Override
+  public void setupHTable() {
+    super.setupHTable();
+    
+    hTable.setScannerCaching(128);
+  }
+  
   public static HTableDescriptor getTableDescriptor() {
     DatabaseConfiguration dbConf = DatabaseConfiguration.getInstance();
     

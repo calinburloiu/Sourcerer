@@ -10,10 +10,10 @@ import org.apache.hadoop.io.WritableComparable;
 import edu.uci.ics.sourcerer.model.Entity;
 
 public class RelationSourceWritable
-    implements WritableComparable<RelationSourceWritable> {
+implements WritableComparable<RelationSourceWritable> {
   
-  byte sourceType;
-  byte[] sourceID;
+  protected byte sourceType;
+  protected byte[] sourceID;
   
   public RelationSourceWritable() {
     super();

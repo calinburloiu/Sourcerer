@@ -107,7 +107,7 @@
   <target name="init-java-tools-core" depends="init">
     <mkdir dir="${build-java-tools-core}" />
   </target>
-
+  
   <target name="compile-java-tools-core" depends="init-java-tools-core">
     <!-- Compile everything -->
     <javac destdir="${build-java-tools-core}" debug="on" includeantruntime="false">
