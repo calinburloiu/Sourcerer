@@ -68,10 +68,10 @@ public class MySQLImporter {
     executor = new QueryExecutor(connection.getConnection());
     
     tasks = new Vector<Task<? extends Model>>(4);
-//    tasks.add(new ProjectsImporter());
-//    tasks.add(new FilesImporter());
+    tasks.add(new ProjectsImporter());
+    tasks.add(new FilesImporter());
     tasks.add(new EntitiesImporter());
-//    tasks.add(new RelationsImporter());
+    tasks.add(new RelationsImporter());
   }
 
   public void start() throws SQLException, HBaseException {
